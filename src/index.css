@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+:root {
+  --bg-outer: #3b0764;
+  --bg-shell: #2e1065;
+  --bg-workspace: #1e0b4b;
+  --bg-sidebar: #4c1d95;
+  --bg-card: #3b176e;
+  --bg-card-elevated: #4c1d95;
+  --bg-input: #270e55;
+  --accent-primary: #9333ea;
+  --accent-bright: #a855f7;
+  --accent-pink: #ec4899;
+  --accent-gold: #facc15;
+  --border-subtle: rgba(196, 181, 253, 0.22);
+  --border-active: #c084fc;
+  --text-primary: #faf5ff;
+  --text-secondary: #ddd6fe;
+  --text-muted: #c4b5fd;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #2e0f66;
+  background-image: radial-gradient(circle at 20% 20%, #581c87 0%, #2e0f66 55%, #1a073d 100%);
+  color: var(--text-primary);
+  font-family: "Press Start 2P", monospace;
+  -webkit-font-smoothing: none;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Crisp pixel-art rendering for 16-bit portraits and icons */
+.pixelated {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* Subtle pixel checkerboard accent strip for headers/banners */
+.pixel-checker {
+  background-image:
+    linear-gradient(45deg, rgba(255, 255, 255, 0.08) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255, 255, 255, 0.08) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.08) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.08) 75%);
+  background-size: 12px 12px;
+  background-position: 0 0, 0 6px, 6px -6px, -6px 0;
+}
+
+/* Controlled purple scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1e0b4b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #6d28d9;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9333ea;
+}
+
+/* Press Start 2P readability helpers */
+.pixel-title {
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+}
+
+.pixel-subtitle {
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.pixel-body {
+  font-size: 10px;
+  line-height: 1.7;
+}
+
+.pixel-micro {
+  font-size: 9px;
+  line-height: 1.6;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #f0abfc;
+  outline-offset: 2px;
+}
