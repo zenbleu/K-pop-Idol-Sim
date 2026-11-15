@@ -26,14 +26,14 @@ export const CompanySetupScreen: React.FC = () => {
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center p-4 sm:p-8">
-      <div className="w-full max-w-4xl rounded-2xl border border-purple-300/30 bg-[#2e1065] shadow-2xl overflow-hidden">
+      <div className="w-full max-w-4xl rounded-2xl border border-purple-300/30 bg-[#240e44] shadow-2xl overflow-hidden">
         {/* Top Pixel Checkerboard Accent */}
-        <div className="h-4 w-full pixel-checker bg-[#4c1d95]" />
+        <div className="h-4 w-full pixel-checker bg-[#3b186e]" />
 
         <div className="p-6 sm:p-10 space-y-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-purple-300/20 pb-6">
             <div>
-              <h1 className="text-xl sm:text-2xl text-white leading-snug">
+              <h1 className="text-xl sm:text-2xl text-[#fffdf7] leading-snug">
                 K-POP IDOL TYCOON
               </h1>
               <p className="pixel-micro text-purple-200 mt-2">
@@ -43,7 +43,7 @@ export const CompanySetupScreen: React.FC = () => {
             <button
               type="button"
               onClick={() => setShowLoad((v) => !v)}
-              className="px-4 py-2.5 rounded-lg border border-purple-300/35 bg-purple-900/70 hover:bg-purple-800 text-purple-100 pixel-micro cursor-pointer self-start shrink-0"
+              className="px-4 py-2.5 rounded-lg border border-purple-300/35 bg-[#31145c] hover:bg-[#411d75] text-[#fffdf7] pixel-micro cursor-pointer self-start shrink-0"
             >
               {showLoad ? 'Back to New Company' : 'Load / Import Save'}
             </button>
@@ -102,8 +102,8 @@ export const CompanySetupScreen: React.FC = () => {
                         onClick={() => setLogoStyle(style.id)}
                         className={`flex flex-col items-center gap-1.5 p-2.5 rounded-lg border cursor-pointer ${
                           logoStyle === style.id
-                            ? 'bg-purple-600 border-fuchsia-300 text-white'
-                            : 'bg-[#1e0b4b] border-purple-300/20 text-purple-200 hover:bg-purple-900/60'
+                            ? 'bg-[#3b186e] border-orange-400 text-[#fffdf7]'
+                            : 'bg-[#15072c] border-purple-300/20 text-purple-200 hover:bg-[#2d1254]'
                         }`}
                       >
                         <PixelCompanyLogo style={style.id} size={28} />
@@ -127,25 +127,25 @@ export const CompanySetupScreen: React.FC = () => {
                     placeholder="Agency vision and musical identity..."
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-lg bg-[#1e0b4b] border border-purple-300/35 text-white pixel-micro"
+                    className="w-full px-3.5 py-2.5 rounded-lg bg-[#15072c] border border-purple-300/35 text-[#fffdf7] pixel-micro"
                   />
                 </div>
 
                 <button
                   type="submit"
                   data-start="true"
-                  className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-fuchsia-600 to-purple-600 hover:from-fuchsia-500 hover:to-purple-500 text-white pixel-subtitle shadow-lg cursor-pointer"
+                  className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-400 hover:to-rose-400 text-[#180832] font-bold pixel-subtitle shadow-lg cursor-pointer"
                 >
                   Establish Agency & Start
                 </button>
               </form>
 
-              <div className="lg:col-span-2 rounded-xl bg-[#1e0b4b] border border-purple-300/20 p-5 space-y-4">
-                <h2 className="pixel-subtitle text-fuchsia-300">Starting Allocation</h2>
+              <div className="lg:col-span-2 rounded-xl bg-[#15072c] border border-purple-300/20 p-5 space-y-4">
+                <h2 className="pixel-subtitle text-amber-300">Starting Allocation</h2>
                 <div className="space-y-2.5 pixel-micro text-purple-100">
                   <div className="flex justify-between border-b border-purple-300/15 pb-2">
                     <span className="text-purple-300">Money</span>
-                    <span className="text-emerald-300">
+                    <span className="text-amber-300">
                       {formatWon(STARTING_PROGRESSION.money)}
                     </span>
                   </div>
@@ -155,7 +155,7 @@ export const CompanySetupScreen: React.FC = () => {
                   </div>
                   <div className="flex justify-between border-b border-purple-300/15 pb-2">
                     <span className="text-purple-300">Company Tier</span>
-                    <span>{STARTING_PROGRESSION.companyTier}</span>
+                    <span className="text-teal-300">{STARTING_PROGRESSION.companyTier}</span>
                   </div>
                   <div className="flex justify-between border-b border-purple-300/15 pb-2">
                     <span className="text-purple-300">Reputation</span>

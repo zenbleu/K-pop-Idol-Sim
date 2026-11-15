@@ -39,15 +39,15 @@ export const Sidebar: React.FC<{
   ).length;
 
   const navContent = (
-    <div className="flex flex-col h-full justify-between p-3 bg-[#43197c]">
+    <div className="flex flex-col h-full justify-between p-3 bg-[#2c1153]">
       <div className="space-y-1.5">
         <div className="flex items-center justify-between px-2 py-2 lg:hidden">
-          <span className="pixel-subtitle text-white">Menu</span>
+          <span className="pixel-subtitle text-amber-200">Menu</span>
           <button
             type="button"
             aria-label="Close navigation menu"
             onClick={onCloseMobile}
-            className="p-1.5 rounded bg-purple-900 text-white cursor-pointer"
+            className="p-1.5 rounded bg-[#3f1c73] text-white cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -67,8 +67,8 @@ export const Sidebar: React.FC<{
                 }}
                 className={`w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-lg text-left transition-colors cursor-pointer whitespace-nowrap ${
                   active
-                    ? 'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-white shadow-md'
-                    : 'text-purple-100 hover:bg-purple-800/60 hover:text-white'
+                    ? 'bg-gradient-to-r from-orange-500 to-rose-500 text-[#180832] font-bold shadow-md'
+                    : 'text-purple-100 hover:bg-[#3d1970] hover:text-amber-100'
                 }`}
               >
                 <span className="flex items-center gap-2.5 min-w-0">
@@ -76,10 +76,18 @@ export const Sidebar: React.FC<{
                   <span className="pixel-micro truncate">{item.label}</span>
                 </span>
                 {item.id === 'production' && activeSalesCount > 0 && (
-                  <span className="pixel-micro text-pink-200">{activeSalesCount}</span>
+                  <span
+                    className={`pixel-micro ${active ? 'text-[#180832]' : 'text-teal-300'}`}
+                  >
+                    {activeSalesCount}
+                  </span>
                 )}
                 {item.id === 'company' && state.idols.length > 0 && (
-                  <span className="pixel-micro text-purple-200">{state.idols.length}</span>
+                  <span
+                    className={`pixel-micro ${active ? 'text-[#180832]' : 'text-amber-300'}`}
+                  >
+                    {state.idols.length}
+                  </span>
                 )}
               </button>
             );
@@ -88,13 +96,13 @@ export const Sidebar: React.FC<{
       </div>
 
       <div className="pt-4 border-t border-purple-300/20 px-2 space-y-1.5">
-        <div className="pixel-micro text-purple-200">
+        <div className="pixel-micro text-amber-200">
           Groups: {state.groups.length}/{state.company.maxGroupSlots}
         </div>
-        <div className="pixel-micro text-purple-200">
+        <div className="pixel-micro text-pink-200">
           Soloists: {state.soloArtists.length}
         </div>
-        <div className="pixel-micro text-purple-200">
+        <div className="pixel-micro text-teal-200">
           Trainees: {state.idols.filter((i) => !i.groupId && !i.isSoloArtist).length}
         </div>
       </div>

@@ -33,6 +33,24 @@ export function getParticipantIdols(
   return state.idols.filter((i) => i.id === solo.idolId);
 }
 
+/**
+ * Target-specific production completion check:
+ * A Group or Soloist unlocks post-debut schedules and concerts only after finishing
+ * at least one Music Production release ('Promoting' or 'Completed').
+ */
+export function hasCompletedProduction(
+  state: GameState,
+  targetType: 'Group' | 'Solo',
+  targetId: string
+): boolean {
+  return state.releases.some(
+    (r) =>
+      r.targetType === targetType &&
+      r.targetId === targetId &&
+      (r.status === 'Promoting' || r.status === 'Completed')
+  );
+}
+
 export function calculateEquipmentBonus(
   participants: Idol[],
   concept: Concept

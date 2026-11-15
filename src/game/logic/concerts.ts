@@ -8,6 +8,7 @@ import {
 } from '../models/types';
 import { formatGameDateShort } from '../utils/date';
 import { clamp, createId } from '../utils/ids';
+import { hasCompletedProduction } from './production';
 import { compareReputations, compareTiers, evaluateCompanyProgression } from './stats';
 
 export function getConcertRequirements(scope: ConcertScope): {
@@ -36,10 +37,13 @@ export function isCompanyConcertUnlocked(state: GameState): { unlocked: boolean;
       reason: 'Company Concerts unlock at Company Tier S and Global Reputation.',
     };
   }
-  if (state.groups.length + state.soloArtists.length < 2) {
+  const debutedCount =
+    state.groups.filter((g) => hasCompletedProduction(state, 'Group', g.id)).length +
+    state.soloArtists.filter((s) => hasCompletedProduction(state, 'Solo', s.id)).length;
+  if (debutedCount < 2) {
     return {
       unlocked: false,
-      reason: 'Requires at least 2 active groups or solo artists.',
+      reason: 'Requires at least 2 debuted groups or soloists with completed music production.',
     };
   }
   return { unlocked: true };
@@ -81,11 +85,25 @@ export function planConcert(
   if (params.targetType === 'Group') {
     const grp = state.groups.find((g) => g.id === params.targetId);
     if (!grp) return { ok: false, error: 'Selected group not found.', state };
+    if (!hasCompletedProduction(state, 'Group', grp.id)) {
+      return {
+        ok: false,
+        error: `${grp.name} is pre-debut. Complete and release a Music Production before scheduling concerts.`,
+        state,
+      };
+    }
     targetName = grp.name;
     popularity = grp.popularity;
   } else if (params.targetType === 'Solo') {
     const solo = state.soloArtists.find((s) => s.id === params.targetId);
     if (!solo) return { ok: false, error: 'Selected solo artist not found.', state };
+    if (!hasCompletedProduction(state, 'Solo', solo.id)) {
+      return {
+        ok: false,
+        error: `${solo.stageName} is pre-debut. Complete and release a Music Production before scheduling concerts.`,
+        state,
+      };
+    }
     targetName = solo.stageName;
     popularity = solo.popularity;
   }

@@ -30,14 +30,14 @@ export const TrainingScreen: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="pixel-title text-white">Training Studios</h1>
+          <h1 className="pixel-title text-[#fffdf7]">Training Studios</h1>
           <p className="pixel-micro text-purple-200 mt-1">
             Purchase studios to unlock structured drills. Upgrade levels for stronger stat growth.
           </p>
         </div>
 
         {/* Category Filter Tabs */}
-        <div className="flex flex-wrap gap-1.5 bg-[#2e1065] p-1.5 rounded-lg border border-purple-300/20">
+        <div className="flex flex-wrap gap-1.5 bg-[#240e44] p-1.5 rounded-lg border border-purple-300/25">
           {(['All', 'Main', 'Main 2', 'Main 3'] as const).map((cat) => (
             <button
               key={cat}
@@ -45,8 +45,8 @@ export const TrainingScreen: React.FC = () => {
               onClick={() => setCategoryFilter(cat)}
               className={`px-3 py-1.5 rounded pixel-micro cursor-pointer ${
                 categoryFilter === cat
-                  ? 'bg-fuchsia-600 text-white'
-                  : 'text-purple-200 hover:bg-purple-800/60'
+                  ? 'bg-gradient-to-r from-orange-500 to-rose-500 text-[#180832] font-bold'
+                  : 'text-purple-100 hover:bg-[#31145c]'
               }`}
             >
               {cat}
@@ -56,13 +56,13 @@ export const TrainingScreen: React.FC = () => {
       </div>
 
       {/* Trainee / Group Target Selector */}
-      <div className="rounded-xl bg-[#2e1065] border border-purple-300/25 p-4 flex flex-wrap items-center gap-4">
-        <div className="flex gap-1.5 bg-[#1e0b4b] p-1 rounded-lg">
+      <div className="rounded-xl bg-[#240e44] border border-purple-300/25 p-4 flex flex-wrap items-center gap-4">
+        <div className="flex gap-1.5 bg-[#15072c] p-1 rounded-lg">
           <button
             type="button"
             onClick={() => setTargetMode('Idol')}
             className={`px-3 py-1.5 rounded pixel-micro cursor-pointer ${
-              targetMode === 'Idol' ? 'bg-purple-600 text-white' : 'text-purple-300'
+              targetMode === 'Idol' ? 'bg-teal-500 text-[#180832] font-bold' : 'text-purple-200'
             }`}
           >
             Individual Idol
@@ -71,7 +71,7 @@ export const TrainingScreen: React.FC = () => {
             type="button"
             onClick={() => setTargetMode('Group')}
             className={`px-3 py-1.5 rounded pixel-micro cursor-pointer ${
-              targetMode === 'Group' ? 'bg-purple-600 text-white' : 'text-purple-300'
+              targetMode === 'Group' ? 'bg-teal-500 text-[#180832] font-bold' : 'text-purple-200'
             }`}
           >
             Entire Group
@@ -160,17 +160,17 @@ export const TrainingScreen: React.FC = () => {
               data-testid={`facility-card-${fac.id}`}
               className={`rounded-xl border p-5 flex flex-col justify-between gap-4 ${
                 unlock.unlocked
-                  ? 'bg-[#2e1065] border-purple-300/25'
-                  : 'bg-[#210b4c] border-purple-300/10 opacity-85'
+                  ? 'bg-[#240e44] border-purple-300/25'
+                  : 'bg-[#1a0936] border-purple-300/15 opacity-85'
               }`}
             >
               <div className="space-y-2.5">
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <div className="text-[8px] text-fuchsia-300">{fac.category}</div>
-                    <h2 className="pixel-subtitle text-white mt-0.5">{fac.name}</h2>
+                    <div className="text-[8px] text-teal-300">{fac.category}</div>
+                    <h2 className="pixel-subtitle text-[#fffdf7] mt-0.5">{fac.name}</h2>
                   </div>
-                  <span className="pixel-micro text-purple-200 shrink-0">
+                  <span className="pixel-micro text-amber-300 shrink-0">
                     {level === 0 ? 'Unowned' : `Lv.${level}/5`}
                   </span>
                 </div>
@@ -179,18 +179,18 @@ export const TrainingScreen: React.FC = () => {
                   {fac.description}
                 </p>
 
-                <div className="rounded-lg bg-[#1e0b4b] p-3 border border-purple-300/15 space-y-1">
+                <div className="rounded-lg bg-[#15072c] p-3 border border-purple-300/15 space-y-1">
                   <div className="pixel-micro text-purple-200">
-                    Trains: <span className="text-white">{STAT_LABELS[fac.stat]}</span>
+                    Trains: <span className="text-[#fffdf7]">{STAT_LABELS[fac.stat]}</span>
                   </div>
                   {selectedIdol && (
                     <div className="pixel-micro text-purple-300">
                       Current {STAT_LABELS[fac.stat]}:{' '}
-                      <span className="text-white">{selectedIdol.stats[fac.stat]}/100</span>
+                      <span className="text-amber-300">{selectedIdol.stats[fac.stat]}/100</span>
                     </div>
                   )}
                   {outcome && (
-                    <div className="text-[8px] text-emerald-300 pt-1">
+                    <div className="text-[8px] text-teal-300 pt-1">
                       Est. +{outcome.gain} {STAT_LABELS[fac.stat]} ({outcome.efficiencyLabel} eff) ·{' '}
                       {formatWon(outcome.cost)} · Sta -{outcome.staminaCost}
                     </div>
@@ -216,7 +216,7 @@ export const TrainingScreen: React.FC = () => {
                         actions.trainGroup(selectedGroupId, fac.id);
                       }
                     }}
-                    className="flex-1 py-2 px-3 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 disabled:bg-purple-950 disabled:text-purple-400 text-white pixel-micro cursor-pointer"
+                    className="flex-1 py-2 px-3 rounded-lg bg-teal-500 hover:bg-teal-400 disabled:bg-[#170833] disabled:text-purple-400 text-[#180832] font-bold pixel-micro cursor-pointer"
                   >
                     Train {targetMode}
                   </button>
@@ -227,12 +227,12 @@ export const TrainingScreen: React.FC = () => {
                     type="button"
                     disabled={!unlock.unlocked}
                     onClick={() => actions.buyOrUpgradeFacility(fac.id)}
-                    className={`py-2 px-3 rounded-lg pixel-micro ${
+                    className={`py-2 px-3 rounded-lg pixel-micro font-bold ${
                       unlock.unlocked
                         ? level === 0
-                          ? 'flex-1 bg-purple-600 hover:bg-purple-500 text-white cursor-pointer'
-                          : 'bg-indigo-700 hover:bg-indigo-600 text-white cursor-pointer'
-                        : 'flex-1 bg-purple-950 text-purple-400 cursor-not-allowed'
+                          ? 'flex-1 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-[#180832] cursor-pointer'
+                          : 'bg-[#31145c] hover:bg-[#411d75] border border-amber-300/40 text-amber-200 cursor-pointer'
+                        : 'flex-1 bg-[#170833] text-purple-400 cursor-not-allowed'
                     }`}
                   >
                     {level === 0

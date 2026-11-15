@@ -77,15 +77,15 @@ export const IdolProfileModal: React.FC = () => {
       onClick={closeIdolProfile}
     >
       <div
-        className="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl border border-purple-300/35 bg-[#2e1065] shadow-2xl"
+        className="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl border border-amber-300/40 bg-[#240e44] shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="flex items-center justify-between gap-4 px-5 py-3 border-b border-purple-300/20 bg-[#3b176e]">
+        <div className="flex items-center justify-between gap-4 px-5 py-3 border-b border-purple-300/20 bg-[#31145c]">
           <div className="min-w-0">
             <h2
               id="idol-profile-modal-title"
-              className="pixel-title text-white truncate"
+              className="pixel-title text-[#fffdf7] truncate"
             >
               Idol Profile — {idol.stageName}
             </h2>
@@ -97,15 +97,15 @@ export const IdolProfileModal: React.FC = () => {
             type="button"
             aria-label="Close idol profile"
             onClick={closeIdolProfile}
-            className="p-2 rounded-lg bg-purple-900/80 hover:bg-purple-700 text-white cursor-pointer shrink-0"
+            className="p-2 rounded-lg bg-[#15072c] hover:bg-orange-500 hover:text-[#180832] text-[#fffdf7] cursor-pointer shrink-0 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Featured Image + Summary Split (PDF Page 12 layout) */}
+        {/* Featured Image + Summary Split */}
         <div className="p-4 sm:p-5 space-y-4">
-          <div className="flex flex-col md:flex-row gap-5 items-start bg-[#1e0b4b] rounded-xl p-4 border border-purple-300/20">
+          <div className="flex flex-col md:flex-row gap-5 items-start bg-[#15072c] rounded-xl p-4 border border-purple-300/20">
             <div className="flex flex-col items-center gap-3 shrink-0">
               <IdolPortrait
                 gender={idol.gender}
@@ -114,10 +114,10 @@ export const IdolProfileModal: React.FC = () => {
                 size="lg"
               />
               <div className="text-center">
-                <div className="pixel-title text-fuchsia-300">
+                <div className="pixel-title text-amber-300">
                   Tier {idol.tier} ({idol.overallRating})
                 </div>
-                <div className="pixel-micro text-purple-200 mt-1">
+                <div className="pixel-micro text-teal-200 mt-1">
                   {idol.specialty}
                 </div>
               </div>
@@ -279,21 +279,21 @@ export const IdolProfileModal: React.FC = () => {
           </div>
 
           {/* All 12 Skill Stats */}
-          <div className="bg-[#1e0b4b] rounded-xl p-4 border border-purple-300/20">
-            <h3 className="pixel-subtitle text-white mb-2.5">Skill Stats (0–100)</h3>
+          <div className="bg-[#15072c] rounded-xl p-4 border border-purple-300/20">
+            <h3 className="pixel-subtitle text-[#fffdf7] mb-2.5">Skill Stats (0–100)</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
               {ALL_STAT_KEYS.map((key) => (
                 <div
                   key={key}
-                  className="rounded-lg bg-[#2e1065] p-2 border border-purple-300/15"
+                  className="rounded-lg bg-[#240e44] p-2 border border-purple-300/15"
                 >
                   <div className="flex justify-between pixel-micro text-purple-200 mb-1">
                     <span>{STAT_LABELS[key]}</span>
-                    <span className="text-white">{idol.stats[key]}</span>
+                    <span className="text-amber-300">{idol.stats[key]}</span>
                   </div>
-                  <div className="h-1.5 rounded-full bg-purple-950 overflow-hidden">
+                  <div className="h-1.5 rounded-full bg-[#110524] overflow-hidden">
                     <div
-                      className="h-full bg-purple-400"
+                      className="h-full bg-teal-400"
                       style={{ width: `${idol.stats[key]}%` }}
                     />
                   </div>
@@ -304,8 +304,8 @@ export const IdolProfileModal: React.FC = () => {
 
           {/* Contract & Wardrobe Split */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-[#1e0b4b] rounded-xl p-4 border border-purple-300/20 space-y-2.5">
-              <h3 className="pixel-subtitle text-white">Contract & Career</h3>
+            <div className="bg-[#15072c] rounded-xl p-4 border border-purple-300/20 space-y-2.5">
+              <h3 className="pixel-subtitle text-[#fffdf7]">Contract & Career</h3>
               <div className="space-y-1.5 pixel-micro text-purple-200">
                 <div>
                   Status:{' '}
@@ -315,7 +315,7 @@ export const IdolProfileModal: React.FC = () => {
                         ? 'text-rose-300'
                         : idol.contract.status === 'Expiring Soon'
                           ? 'text-amber-300'
-                          : 'text-emerald-300'
+                          : 'text-teal-300'
                     }
                   >
                     {idol.contract.status}
@@ -332,14 +332,14 @@ export const IdolProfileModal: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => actions.renewContract(idol.id, 24)}
-                  className="px-3 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white pixel-micro cursor-pointer"
+                  className="px-3 py-2 rounded-lg bg-[#31145c] hover:bg-[#411d75] border border-purple-300/30 text-[#fffdf7] pixel-micro cursor-pointer"
                 >
                   Renew +24m ({formatWon(idol.contract.weeklySalary * 4)})
                 </button>
                 <button
                   type="button"
                   onClick={() => actions.restIdol(idol.id)}
-                  className="px-3 py-2 rounded-lg bg-indigo-700 hover:bg-indigo-600 text-white pixel-micro cursor-pointer"
+                  className="px-3 py-2 rounded-lg bg-teal-500 hover:bg-teal-400 text-[#180832] font-bold pixel-micro cursor-pointer"
                 >
                   Quick Rest
                 </button>
@@ -347,7 +347,7 @@ export const IdolProfileModal: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => actions.debutSolo(idol.id)}
-                    className="px-3 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 text-white pixel-micro cursor-pointer"
+                    className="px-3 py-2 rounded-lg bg-pink-600 hover:bg-pink-500 text-white font-bold pixel-micro cursor-pointer"
                   >
                     Debut Solo
                   </button>

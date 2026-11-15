@@ -37,7 +37,7 @@ export const DashboardScreen: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="pixel-title text-white">Company Dashboard</h1>
+          <h1 className="pixel-title text-[#fffdf7]">Company Dashboard</h1>
           <p className="pixel-micro text-purple-200 mt-1">
             {state.company.description}
           </p>
@@ -46,14 +46,14 @@ export const DashboardScreen: React.FC = () => {
           <button
             type="button"
             onClick={() => setActiveTab('auditions')}
-            className="px-3 py-2 rounded-lg bg-purple-700 hover:bg-purple-600 text-white pixel-micro cursor-pointer"
+            className="px-3 py-2 rounded-lg bg-[#31145c] hover:bg-[#411d75] border border-purple-300/30 text-[#fffdf7] pixel-micro cursor-pointer"
           >
             Scout Trainees
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('schedule')}
-            className="px-3 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 text-white pixel-micro cursor-pointer"
+            className="px-3 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-400 hover:to-rose-400 text-[#180832] font-bold pixel-micro cursor-pointer"
           >
             Plan Week ({state.weeklyPlan.length})
           </button>
@@ -62,23 +62,23 @@ export const DashboardScreen: React.FC = () => {
 
       {/* Interactive Random Event Decision (if triggered) */}
       {state.pendingEvent && (
-        <div className="rounded-xl border border-fuchsia-400/60 bg-[#3b176e] p-5 space-y-3">
-          <div className="pixel-subtitle text-fuchsia-300">
+        <div className="rounded-xl border border-amber-400/60 bg-[#31145c] p-5 space-y-3 shadow-lg">
+          <div className="pixel-subtitle text-amber-300">
             Agency Event: {state.pendingEvent.title}
           </div>
-          <p className="pixel-micro text-purple-100">{state.pendingEvent.description}</p>
+          <p className="pixel-micro text-[#fffdf7]">{state.pendingEvent.description}</p>
           <div className="flex flex-wrap gap-3 pt-1">
             <button
               type="button"
               onClick={() => actions.resolveEvent('A')}
-              className="px-4 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 text-white pixel-micro cursor-pointer"
+              className="px-4 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-400 hover:to-rose-400 text-[#180832] font-bold pixel-micro cursor-pointer"
             >
               {state.pendingEvent.optionA.label} ({state.pendingEvent.optionA.effectSummary})
             </button>
             <button
               type="button"
               onClick={() => actions.resolveEvent('B')}
-              className="px-4 py-2 rounded-lg bg-purple-800 hover:bg-purple-700 text-purple-100 pixel-micro cursor-pointer"
+              className="px-4 py-2 rounded-lg bg-[#170833] hover:bg-[#240e44] border border-purple-300/30 text-purple-100 pixel-micro cursor-pointer"
             >
               {state.pendingEvent.optionB.label} ({state.pendingEvent.optionB.effectSummary})
             </button>
@@ -88,36 +88,36 @@ export const DashboardScreen: React.FC = () => {
 
       {/* Top KPI Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="rounded-xl bg-[#2e1065] border border-purple-300/20 p-4">
-          <div className="pixel-micro text-purple-300">Roster Overview</div>
-          <div className="text-[11px] leading-snug text-white mt-2 sm:whitespace-nowrap">
+        <div className="rounded-xl bg-[#240e44] border border-purple-300/25 p-4">
+          <div className="pixel-micro text-purple-200">Roster Overview</div>
+          <div className="text-[11px] leading-snug text-[#fffdf7] mt-2 sm:whitespace-nowrap">
             {state.groups.length} Grp · {state.soloArtists.length} Solo · {trainees.length} Trn
           </div>
-          <div className="pixel-micro text-purple-200 mt-1.5">
+          <div className="pixel-micro text-amber-300 mt-1.5">
             Total Idols: {state.idols.length}
           </div>
         </div>
-        <div className="rounded-xl bg-[#2e1065] border border-purple-300/20 p-4">
-          <div className="pixel-micro text-purple-300">Total Fanbase</div>
-          <div className="pixel-title text-fuchsia-300 mt-2">
+        <div className="rounded-xl bg-[#240e44] border border-purple-300/25 p-4">
+          <div className="pixel-micro text-purple-200">Total Fanbase</div>
+          <div className="pixel-title text-pink-300 mt-2">
             {formatNumber(totalFans)}
           </div>
           <div className="pixel-micro text-purple-200 mt-1">
-            Reputation: {state.company.reputation}
+            Reputation: <span className="text-teal-300">{state.company.reputation}</span>
           </div>
         </div>
-        <div className="rounded-xl bg-[#2e1065] border border-purple-300/20 p-4">
-          <div className="pixel-micro text-purple-300">Lifetime Revenue</div>
-          <div className="pixel-subtitle text-emerald-300 mt-2">
+        <div className="rounded-xl bg-[#240e44] border border-purple-300/25 p-4">
+          <div className="pixel-micro text-purple-200">Lifetime Revenue</div>
+          <div className="pixel-subtitle text-amber-300 mt-2">
             {formatWon(state.company.totalRevenue)}
           </div>
           <div className="pixel-micro text-purple-200 mt-1">
             Expenses: {formatWon(state.company.totalExpenses)}
           </div>
         </div>
-        <div className="rounded-xl bg-[#2e1065] border border-purple-300/20 p-4">
-          <div className="pixel-micro text-purple-300">Audition & Group Slots</div>
-          <div className="pixel-subtitle text-white mt-2">
+        <div className="rounded-xl bg-[#240e44] border border-purple-300/25 p-4">
+          <div className="pixel-micro text-purple-200">Audition & Group Slots</div>
+          <div className="pixel-subtitle text-teal-300 mt-2">
             {state.company.auditionCapacity} Aud · {state.groups.length}/{state.company.maxGroupSlots} Grp
           </div>
           <div className="pixel-micro text-purple-200 mt-1">
@@ -132,14 +132,14 @@ export const DashboardScreen: React.FC = () => {
         <div className="xl:col-span-2 space-y-6">
           {/* Current Trends & Warnings */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="rounded-xl bg-[#2e1065] border border-purple-300/20 p-4 space-y-2.5">
+            <div className="rounded-xl bg-[#240e44] border border-purple-300/25 p-4 space-y-2.5">
               <div className="flex items-center justify-between">
-                <h2 className="pixel-subtitle text-white">Weekly Market Trends</h2>
-                <span className="pixel-micro text-purple-300">W{state.trends.weekUpdated}</span>
+                <h2 className="pixel-subtitle text-[#fffdf7]">Weekly Market Trends</h2>
+                <span className="pixel-micro text-teal-300">W{state.trends.weekUpdated}</span>
               </div>
               <div className="pixel-micro text-purple-200">
                 Hot Genres:{' '}
-                <span className="text-fuchsia-300">
+                <span className="text-amber-300">
                   {state.trends.trendingGenres.join(' / ')}
                 </span>
               </div>
@@ -154,10 +154,10 @@ export const DashboardScreen: React.FC = () => {
               </p>
             </div>
 
-            <div className="rounded-xl bg-[#2e1065] border border-purple-300/20 p-4 space-y-2">
-              <h2 className="pixel-subtitle text-white">Upcoming & Alerts</h2>
+            <div className="rounded-xl bg-[#240e44] border border-purple-300/25 p-4 space-y-2">
+              <h2 className="pixel-subtitle text-[#fffdf7]">Upcoming & Alerts</h2>
               {warnings.length === 0 ? (
-                <p className="pixel-micro text-emerald-300">
+                <p className="pixel-micro text-teal-300">
                   All contracts, stamina, and loyalty levels are healthy.
                 </p>
               ) : (
@@ -176,20 +176,20 @@ export const DashboardScreen: React.FC = () => {
           </div>
 
           {/* Current Production & Live 10-Min Sales */}
-          <div className="rounded-xl bg-[#2e1065] border border-purple-300/20 p-5 space-y-4">
+          <div className="rounded-xl bg-[#240e44] border border-purple-300/25 p-5 space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="pixel-subtitle text-white">Current Production & Live Sales</h2>
+              <h2 className="pixel-subtitle text-[#fffdf7]">Current Production & Live Sales</h2>
               <button
                 type="button"
                 onClick={() => setActiveTab('production')}
-                className="pixel-micro text-fuchsia-300 hover:text-fuchsia-200 cursor-pointer"
+                className="pixel-micro text-amber-300 hover:text-amber-200 cursor-pointer"
               >
                 Manage Production →
               </button>
             </div>
 
             {activeProductions.length === 0 && activePromos.length === 0 ? (
-              <p className="pixel-micro text-purple-300">
+              <p className="pixel-micro text-purple-200">
                 No active album production or live sales right now. Debut an artist and start a release in Production.
               </p>
             ) : (
@@ -197,17 +197,17 @@ export const DashboardScreen: React.FC = () => {
                 {activeProductions.map((rel) => (
                   <div
                     key={rel.id}
-                    className="rounded-lg bg-[#1e0b4b] p-3.5 border border-purple-300/20 flex flex-wrap items-center justify-between gap-3"
+                    className="rounded-lg bg-[#15072c] p-3.5 border border-purple-300/20 flex flex-wrap items-center justify-between gap-3"
                   >
                     <div>
-                      <div className="pixel-micro text-white">
+                      <div className="pixel-micro text-[#fffdf7]">
                         [{rel.releaseType}] {rel.title} — {rel.targetName}
                       </div>
-                      <div className="pixel-micro text-purple-300 mt-1">
+                      <div className="pixel-micro text-purple-200 mt-1">
                         {rel.genre} · {rel.concept} · Quality Est. {rel.quality}/100
                       </div>
                     </div>
-                    <div className="pixel-micro text-fuchsia-300">
+                    <div className="pixel-micro text-amber-300">
                       Weeks {rel.weeksElapsed}/{rel.durationWeeks} · Rec {rel.recordingSessions}/{rel.recordingTarget}
                     </div>
                   </div>
@@ -225,25 +225,25 @@ export const DashboardScreen: React.FC = () => {
                   return (
                     <div
                       key={rel.id}
-                      className="rounded-lg bg-[#1e0b4b] p-3.5 border border-fuchsia-400/30 space-y-2"
+                      className="rounded-lg bg-[#15072c] p-3.5 border border-orange-400/40 space-y-2"
                     >
                       <div className="flex flex-wrap items-center justify-between gap-2">
-                        <span className="pixel-micro text-white">
+                        <span className="pixel-micro text-[#fffdf7]">
                           LIVE SALES: "{rel.title}" ({rel.targetName})
                         </span>
                         <span className="pixel-micro text-pink-300">
                           {formatCountdown(rem)} left
                         </span>
                       </div>
-                      <div className="h-2 rounded-full bg-purple-950 overflow-hidden">
+                      <div className="h-2 rounded-full bg-[#240e44] overflow-hidden">
                         <div
-                          className="h-full bg-fuchsia-500 transition-all"
+                          className="h-full bg-gradient-to-r from-orange-500 to-pink-400 transition-all"
                           style={{ width: `${pct}%` }}
                         />
                       </div>
                       <div className="flex justify-between pixel-micro text-purple-200">
                         <span>Sold: {formatNumber(rel.salesUnits)} copies</span>
-                        <span>Company Rev: {formatWon(rel.companyRevenueApplied)}</span>
+                        <span className="text-teal-300">Company Rev: {formatWon(rel.companyRevenueApplied)}</span>
                       </div>
                     </div>
                   );
@@ -253,19 +253,19 @@ export const DashboardScreen: React.FC = () => {
           </div>
 
           {/* Quick Roster Overview */}
-          <div className="rounded-xl bg-[#2e1065] border border-purple-300/20 p-5 space-y-3">
+          <div className="rounded-xl bg-[#240e44] border border-purple-300/25 p-5 space-y-3">
             <div className="flex items-center justify-between">
-              <h2 className="pixel-subtitle text-white">Active Artists & Roster</h2>
+              <h2 className="pixel-subtitle text-[#fffdf7]">Active Artists & Roster</h2>
               <button
                 type="button"
                 onClick={() => setActiveTab('company')}
-                className="pixel-micro text-fuchsia-300 hover:text-fuchsia-200 cursor-pointer"
+                className="pixel-micro text-amber-300 hover:text-amber-200 cursor-pointer"
               >
                 Open Company →
               </button>
             </div>
             {state.idols.length === 0 ? (
-              <p className="pixel-micro text-purple-300">
+              <p className="pixel-micro text-purple-200">
                 No trainees recruited yet. Visit Auditions to discover your first talent.
               </p>
             ) : (
@@ -275,7 +275,7 @@ export const DashboardScreen: React.FC = () => {
                     key={idol.id}
                     type="button"
                     onClick={() => openIdolProfile(idol.id)}
-                    className="flex items-center gap-3 p-2.5 rounded-lg bg-[#1e0b4b] hover:bg-purple-900/60 border border-purple-300/20 text-left cursor-pointer"
+                    className="flex items-center gap-3 p-2.5 rounded-lg bg-[#15072c] hover:bg-[#31145c] border border-purple-300/20 hover:border-amber-300/50 text-left cursor-pointer transition-colors"
                   >
                     <IdolPortrait
                       gender={idol.gender}
@@ -284,10 +284,10 @@ export const DashboardScreen: React.FC = () => {
                       size="xs"
                     />
                     <div className="min-w-0 flex-1">
-                      <div className="pixel-micro text-white truncate">
-                        {idol.stageName} · Tier {idol.tier}
+                      <div className="pixel-micro text-[#fffdf7] truncate">
+                        {idol.stageName} · <span className="text-amber-300">Tier {idol.tier}</span>
                       </div>
-                      <div className="pixel-micro text-purple-300 truncate">
+                      <div className="pixel-micro text-purple-200 truncate">
                         {idol.specialty} · Sta {idol.currentStamina}%
                       </div>
                     </div>
@@ -299,19 +299,19 @@ export const DashboardScreen: React.FC = () => {
         </div>
 
         {/* Column 3: News Feed */}
-        <div className="rounded-xl bg-[#2e1065] border border-purple-300/20 p-5 flex flex-col">
-          <h2 className="pixel-subtitle text-white mb-4">Entertainment News</h2>
+        <div className="rounded-xl bg-[#240e44] border border-purple-300/25 p-5 flex flex-col">
+          <h2 className="pixel-subtitle text-[#fffdf7] mb-4">Entertainment News</h2>
           <div className="space-y-3 overflow-y-auto max-h-[540px] pr-1">
             {state.news.map((item) => (
               <div
                 key={item.id}
-                className="rounded-lg bg-[#1e0b4b] p-3 border border-purple-300/15 space-y-1.5"
+                className="rounded-lg bg-[#15072c] p-3 border border-purple-300/15 space-y-1.5"
               >
-                <div className="flex items-center justify-between pixel-micro text-purple-300">
+                <div className="flex items-center justify-between pixel-micro text-teal-300">
                   <span>{item.category}</span>
                   <span>{item.dateLabel}</span>
                 </div>
-                <div className="pixel-micro text-white leading-snug">{item.headline}</div>
+                <div className="pixel-micro text-[#fffdf7] leading-snug">{item.headline}</div>
                 <p className="pixel-micro text-purple-200 leading-relaxed">{item.detail}</p>
               </div>
             ))}

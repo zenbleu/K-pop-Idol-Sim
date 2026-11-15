@@ -274,10 +274,52 @@ export type ActivityType =
   | 'Rest & Recovery'
   | 'Artist Vacation';
 
+export type ScheduleCategory =
+  | 'Rest'
+  | 'Training'
+  | 'Company'
+  | 'Music Shows'
+  | 'Concerts'
+  | 'Others';
+
+export interface ScheduleActivityDefinition {
+  id: string;
+  label: string;
+  legacyActivityType: ActivityType;
+  category: ScheduleCategory;
+  imagePath: string;
+  minTier: TierRank;
+  requiresDebut: boolean;
+  allowedWeekdays?: Weekday[];
+  requiredFacilityId?: string;
+  statTrained?: StatKey;
+  staminaCost: number;
+  fatigueDelta: number;
+  staminaRestore?: number;
+  baseIncome: number;
+  baseCost: number;
+  popularityDelta: number;
+  fanGainBase: number;
+  loyaltyDelta?: number;
+  description: string;
+}
+
+export interface WeeklyPActivityAvailability {
+  targetType: 'Group' | 'Solo';
+  targetId: string;
+  year: number;
+  week: number;
+  totalWeeks: number;
+  availableActivityIds: string[];
+}
+
 export interface PlannedActivity {
   id: string;
   day: Weekday;
   activityType: ActivityType;
+  activityId?: string;
+  category?: ScheduleCategory;
+  imagePath?: string;
   targetType: 'Idol' | 'Group' | 'Solo' | 'Company';
   targetId: string;
   targetName: string;
@@ -422,6 +464,7 @@ export interface GameState {
   releases: ReleaseProject[];
   weeklyPlan: PlannedActivity[];
   weeklyGoalsNote: string;
+  weeklyPActivityAvailability: Record<string, WeeklyPActivityAvailability>;
   concerts: ConcertPlan[];
   tours: TourPlan[];
   trends: TrendState;

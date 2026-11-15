@@ -1,22 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  --bg-outer: #3b0764;
-  --bg-shell: #2e1065;
-  --bg-workspace: #1e0b4b;
-  --bg-sidebar: #4c1d95;
-  --bg-card: #3b176e;
-  --bg-card-elevated: #4c1d95;
-  --bg-input: #270e55;
-  --accent-primary: #9333ea;
-  --accent-bright: #a855f7;
-  --accent-pink: #ec4899;
-  --accent-gold: #facc15;
-  --border-subtle: rgba(196, 181, 253, 0.22);
-  --border-active: #c084fc;
-  --text-primary: #faf5ff;
-  --text-secondary: #ddd6fe;
-  --text-muted: #c4b5fd;
+  --bg-outer: #180832;
+  --bg-shell: #261047;
+  --bg-workspace: #14062b;
+  --bg-sidebar: #2d1254;
+  --bg-card: #240e44;
+  --bg-card-elevated: #31145c;
+  --bg-input: #170833;
+  --accent-primary: #ea580c;
+  --accent-bright: #fb923c;
+  --accent-pink: #f472b6;
+  --accent-teal: #2dd4bf;
+  --accent-gold: #fbbf24;
+  --border-subtle: rgba(216, 180, 254, 0.22);
+  --border-active: #fb923c;
+  --text-primary: #fffdf7;
+  --text-secondary: #ede9fe;
+  --text-muted: #d8b4fe;
 }
 
 * {
@@ -29,8 +30,11 @@ body,
   min-height: 100%;
   margin: 0;
   padding: 0;
-  background-color: #2e0f66;
-  background-image: radial-gradient(circle at 20% 20%, #581c87 0%, #2e0f66 55%, #1a073d 100%);
+  background-color: #16072d;
+  background-image:
+    radial-gradient(circle at 18% 15%, rgba(234, 88, 12, 0.14) 0%, transparent 40%),
+    radial-gradient(circle at 82% 18%, rgba(45, 212, 191, 0.12) 0%, transparent 38%),
+    radial-gradient(circle at 50% 80%, #3b136c 0%, #1d093c 58%, #110424 100%);
   color: var(--text-primary);
   font-family: "Press Start 2P", monospace;
   -webkit-font-smoothing: none;
@@ -46,31 +50,31 @@ body,
 /* Subtle pixel checkerboard accent strip for headers/banners */
 .pixel-checker {
   background-image:
-    linear-gradient(45deg, rgba(255, 255, 255, 0.08) 25%, transparent 25%),
-    linear-gradient(-45deg, rgba(255, 255, 255, 0.08) 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.08) 75%),
-    linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.08) 75%);
+    linear-gradient(45deg, rgba(251, 191, 36, 0.12) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(251, 191, 36, 0.12) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(251, 191, 36, 0.12) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(251, 191, 36, 0.12) 75%);
   background-size: 12px 12px;
   background-position: 0 0, 0 6px, 6px -6px, -6px 0;
 }
 
-/* Controlled purple scrollbar */
+/* Controlled dark-plum scrollbar with amber thumb */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #1e0b4b;
+  background: #14062b;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #6d28d9;
+  background: #5b21b6;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #9333ea;
+  background: #f97316;
 }
 
 /* Press Start 2P readability helpers */
@@ -99,6 +103,6 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 2px solid #f0abfc;
+  outline: 2px solid #fbbf24;
   outline-offset: 2px;
 }

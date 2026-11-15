@@ -68,18 +68,18 @@ export const TutorialModal: React.FC = () => {
       onClick={() => setTutorialOpen(false)}
     >
       <div
-        className="w-full max-w-3xl max-h-[85vh] overflow-y-auto rounded-xl border border-purple-300/35 bg-[#2e1065] p-6 shadow-2xl"
+        className="w-full max-w-3xl max-h-[85vh] overflow-y-auto rounded-xl border border-amber-300/40 bg-[#240e44] p-6 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between gap-4 mb-4 pb-3 border-b border-purple-300/20">
-          <h2 id="tutorial-title" className="pixel-title text-white">
+          <h2 id="tutorial-title" className="pixel-title text-[#fffdf7]">
             Agency Manager Guide
           </h2>
           <button
             type="button"
             aria-label="Close guide"
             onClick={() => setTutorialOpen(false)}
-            className="p-2 rounded-lg bg-purple-900/70 hover:bg-purple-800 text-purple-100 cursor-pointer"
+            className="p-2 rounded-lg bg-[#15072c] hover:bg-orange-500 hover:text-[#180832] text-purple-100 cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -89,9 +89,9 @@ export const TutorialModal: React.FC = () => {
           {TUTORIAL_STEPS.map((s) => (
             <div
               key={s.num}
-              className="rounded-lg border border-purple-300/20 bg-[#1e0b4b] p-3.5"
+              className="rounded-lg border border-purple-300/20 bg-[#15072c] p-3.5"
             >
-              <div className="pixel-subtitle text-fuchsia-300 mb-1.5">
+              <div className="pixel-subtitle text-amber-300 mb-1.5">
                 {s.num}. {s.title}
               </div>
               <p className="pixel-micro text-purple-100 leading-relaxed">{s.text}</p>
@@ -103,14 +103,14 @@ export const TutorialModal: React.FC = () => {
           <button
             type="button"
             onClick={actions.dismissTutorial}
-            className="px-4 py-2.5 rounded-lg border border-purple-300/30 bg-purple-900/60 hover:bg-purple-800 text-purple-100 pixel-micro cursor-pointer"
+            className="px-4 py-2.5 rounded-lg border border-purple-300/30 bg-[#31145c] hover:bg-[#411d75] text-purple-100 pixel-micro cursor-pointer"
           >
             Dismiss Quick Banner
           </button>
           <button
             type="button"
             onClick={() => setTutorialOpen(false)}
-            className="px-4 py-2.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white pixel-micro cursor-pointer"
+            className="px-4 py-2.5 rounded-lg bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-400 hover:to-rose-400 text-[#180832] font-bold pixel-micro cursor-pointer"
           >
             Got It
           </button>

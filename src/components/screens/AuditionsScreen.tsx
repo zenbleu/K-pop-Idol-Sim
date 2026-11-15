@@ -27,26 +27,26 @@ export const AuditionsScreen: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="pixel-title text-white">Auditions & Scouting</h1>
+          <h1 className="pixel-title text-[#fffdf7]">Auditions & Scouting</h1>
           <p className="pixel-micro text-purple-200 mt-1">
-            Audition Capacity: {state.company.auditionCapacity}/5 candidates · Inspect stats before recruiting.
+            Audition Capacity: <span className="text-teal-300">{state.company.auditionCapacity}/5</span> candidates · Inspect stats before recruiting.
           </p>
         </div>
       </div>
 
-      {/* PDF Page 9: 3-Panel Layout (Left = Audition Types, Right = Expandable Candidate Panels) */}
+      {/* 3-Panel Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Panel 1 (Left): Audition Types & Controls */}
         <div className="lg:col-span-4 space-y-5">
           {/* Money Auditions */}
-          <div className="rounded-xl bg-[#2e1065] border border-purple-300/25 p-5 space-y-4">
+          <div className="rounded-xl bg-[#240e44] border border-purple-300/25 p-5 space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="pixel-subtitle text-white">Money Auditions</h2>
+              <h2 className="pixel-subtitle text-[#fffdf7]">Money Auditions</h2>
               <select
                 aria-label="Money audition gender filter"
                 value={moneyGenderFilter}
                 onChange={(e) => setMoneyGenderFilter(e.target.value as Gender | 'Mixed')}
-                className="px-2 py-1 rounded bg-[#1e0b4b] border border-purple-300/30 text-white pixel-micro"
+                className="px-2 py-1 rounded bg-[#15072c] border border-purple-300/30 text-[#fffdf7] pixel-micro"
               >
                 <option value="Mixed">Mixed</option>
                 <option value="Female">Female Only</option>
@@ -63,23 +63,23 @@ export const AuditionsScreen: React.FC = () => {
                 return (
                   <div
                     key={type}
-                    className="rounded-lg bg-[#1e0b4b] p-3 border border-purple-300/20 space-y-2"
+                    className="rounded-lg bg-[#15072c] p-3 border border-purple-300/20 space-y-2"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="pixel-micro text-white">{cfg.label}</span>
-                      <span className="pixel-micro text-emerald-300">{formatWon(cfg.cost)}</span>
+                      <span className="pixel-micro text-[#fffdf7]">{cfg.label}</span>
+                      <span className="pixel-micro text-amber-300">{formatWon(cfg.cost)}</span>
                     </div>
-                    <p className="text-[8px] text-purple-300 leading-relaxed">
+                    <p className="text-[8px] text-purple-200 leading-relaxed">
                       {cfg.description}
                     </p>
                     <button
                       type="button"
                       disabled={!unlocked}
                       onClick={() => actions.runMoneyAudition(type, moneyGenderFilter)}
-                      className={`w-full py-2 rounded-lg pixel-micro ${
+                      className={`w-full py-2 rounded-lg pixel-micro font-bold ${
                         unlocked
-                          ? 'bg-purple-600 hover:bg-purple-500 text-white cursor-pointer'
-                          : 'bg-purple-950 text-purple-400 cursor-not-allowed'
+                          ? 'bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-[#180832] cursor-pointer'
+                          : 'bg-[#240e44] text-purple-400 cursor-not-allowed'
                       }`}
                     >
                       {unlocked ? `Hold ${type} Audition` : 'Locked (Agency HQ Upgrade)'}
@@ -91,7 +91,7 @@ export const AuditionsScreen: React.FC = () => {
           </div>
 
           {/* Ruby Auditions */}
-          <div className="rounded-xl bg-[#2e1065] border border-pink-400/30 p-5 space-y-3.5">
+          <div className="rounded-xl bg-[#240e44] border border-pink-400/35 p-5 space-y-3.5">
             <h2 className="pixel-subtitle text-pink-300">Ruby Auditions</h2>
             <p className="text-[8px] text-purple-200 leading-relaxed">
               Targeted scouting up to A-tier. Higher durations improve candidate distribution without guaranteeing tier.
@@ -108,7 +108,7 @@ export const AuditionsScreen: React.FC = () => {
                     className={`py-2 rounded-lg border pixel-micro cursor-pointer ${
                       rubyGender === g
                         ? 'bg-pink-600 border-pink-300 text-white'
-                        : 'bg-[#1e0b4b] border-purple-300/20 text-purple-200'
+                        : 'bg-[#15072c] border-purple-300/20 text-purple-200'
                     }`}
                   >
                     {g}
@@ -125,7 +125,7 @@ export const AuditionsScreen: React.FC = () => {
                 id="ruby-dur"
                 value={rubyDuration}
                 onChange={(e) => setRubyDuration(e.target.value as RubyAuditionDuration)}
-                className="w-full px-3 py-2 rounded-lg bg-[#1e0b4b] border border-purple-300/30 text-white pixel-micro"
+                className="w-full px-3 py-2 rounded-lg bg-[#15072c] border border-purple-300/30 text-[#fffdf7] pixel-micro"
               >
                 {(Object.keys(RUBY_AUDITION_CONFIG) as RubyAuditionDuration[]).map((d) => (
                   <option key={d} value={d}>
@@ -146,7 +146,7 @@ export const AuditionsScreen: React.FC = () => {
                 max={state.company.auditionCapacity}
                 value={clampedSlots}
                 onChange={(e) => setRubySlots(Number(e.target.value))}
-                className="w-full accent-pink-500"
+                className="w-full accent-pink-400"
               />
             </div>
 
@@ -159,28 +159,28 @@ export const AuditionsScreen: React.FC = () => {
                   slots: clampedSlots,
                 })
               }
-              className="w-full py-2.5 rounded-lg bg-gradient-to-r from-pink-600 to-fuchsia-600 hover:from-pink-500 hover:to-fuchsia-500 text-white pixel-micro cursor-pointer"
+              className="w-full py-2.5 rounded-lg bg-gradient-to-r from-pink-600 to-rose-500 hover:from-pink-500 hover:to-rose-400 text-white font-bold pixel-micro cursor-pointer"
             >
               Scout ({rubyCost} Rubies)
             </button>
           </div>
         </div>
 
-        {/* Panel 2 & 3 (Right): Candidate Cards (2 initial slots, expandable/scrollable up to 5) */}
+        {/* Panel 2 & 3 (Right): Candidate Cards */}
         <div className="lg:col-span-8 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="pixel-subtitle text-white">
+            <h2 className="pixel-subtitle text-[#fffdf7]">
               Audition Candidates ({state.auditionPool.length})
             </h2>
             {state.lastAuditionInfo && (
-              <span className="pixel-micro text-purple-300">{state.lastAuditionInfo}</span>
+              <span className="pixel-micro text-teal-300">{state.lastAuditionInfo}</span>
             )}
           </div>
 
           {state.auditionPool.length === 0 ? (
-            <div className="rounded-xl bg-[#2e1065] border border-purple-300/20 p-8 text-center space-y-2">
-              <div className="pixel-subtitle text-purple-100">No Active Candidates</div>
-              <p className="pixel-micro text-purple-300">
+            <div className="rounded-xl bg-[#240e44] border border-purple-300/25 p-8 text-center space-y-2">
+              <div className="pixel-subtitle text-[#fffdf7]">No Active Candidates</div>
+              <p className="pixel-micro text-purple-200">
                 Select an audition type on the left to scout up to {state.company.auditionCapacity} candidates.
               </p>
             </div>
@@ -190,7 +190,7 @@ export const AuditionsScreen: React.FC = () => {
                 <article
                   key={cand.id}
                   data-testid={`audition-candidate-${idx}`}
-                  className="rounded-xl bg-[#2e1065] border border-purple-300/25 p-5 flex flex-col justify-between gap-4"
+                  className="rounded-xl bg-[#240e44] border border-purple-300/25 p-5 flex flex-col justify-between gap-4"
                 >
                   <div className="space-y-4">
                     <div className="flex items-start gap-3.5">
@@ -201,13 +201,13 @@ export const AuditionsScreen: React.FC = () => {
                         size="md"
                       />
                       <div className="min-w-0 flex-1">
-                        <div className="pixel-subtitle text-white truncate">
+                        <div className="pixel-subtitle text-[#fffdf7] truncate">
                           {cand.name}
                         </div>
-                        <div className="pixel-micro text-fuchsia-300 mt-1">
+                        <div className="pixel-micro text-amber-300 mt-1">
                           Tier {cand.tier} ({cand.overallRating}) · {cand.specialty}
                         </div>
-                        <div className="pixel-micro text-purple-300 mt-1">
+                        <div className="pixel-micro text-purple-200 mt-1">
                           {cand.gender} · Age {cand.age} · {cand.nationality}
                         </div>
                       </div>
@@ -257,14 +257,14 @@ export const AuditionsScreen: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => actions.rejectCandidate(cand.id)}
-                      className="px-3.5 py-2 rounded-lg bg-purple-900/70 hover:bg-purple-800 text-purple-200 pixel-micro cursor-pointer"
+                      className="px-3.5 py-2 rounded-lg bg-[#31145c] hover:bg-[#411d75] border border-purple-300/25 text-purple-100 pixel-micro cursor-pointer"
                     >
                       Reject
                     </button>
                     <button
                       type="button"
                       onClick={() => actions.recruitCandidate(cand.id)}
-                      className="flex-1 py-2 px-3 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 text-white pixel-micro cursor-pointer"
+                      className="flex-1 py-2 px-3 rounded-lg bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-400 hover:to-rose-400 text-[#180832] font-bold pixel-micro cursor-pointer"
                     >
                       Recruit ({formatWon(cand.recruitmentCost)})
                     </button>

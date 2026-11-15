@@ -24,10 +24,10 @@ export const ConfirmDialog: React.FC = () => {
       onClick={closeConfirm}
     >
       <div
-        className="w-full max-w-md rounded-xl border border-purple-300/35 bg-[#2e1065] p-6 shadow-2xl"
+        className="w-full max-w-md rounded-xl border border-amber-300/40 bg-[#240e44] p-6 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 id="confirm-dialog-title" className="pixel-title text-white mb-3">
+        <h2 id="confirm-dialog-title" className="pixel-title text-[#fffdf7] mb-3">
           {confirmRequest.title}
         </h2>
         <p className="pixel-body text-purple-100 mb-6 whitespace-pre-line">
@@ -37,7 +37,7 @@ export const ConfirmDialog: React.FC = () => {
           <button
             type="button"
             onClick={closeConfirm}
-            className="px-4 py-2.5 rounded-lg border border-purple-300/30 bg-purple-900/60 hover:bg-purple-800/80 text-purple-100 pixel-micro cursor-pointer"
+            className="px-4 py-2.5 rounded-lg border border-purple-300/30 bg-[#31145c] hover:bg-[#411d75] text-purple-100 pixel-micro cursor-pointer"
           >
             Cancel
           </button>
@@ -48,10 +48,10 @@ export const ConfirmDialog: React.FC = () => {
               closeConfirm();
               fn();
             }}
-            className={`px-4 py-2.5 rounded-lg text-white pixel-micro cursor-pointer ${
+            className={`px-4 py-2.5 rounded-lg pixel-micro cursor-pointer font-bold ${
               confirmRequest.destructive
-                ? 'bg-rose-600 hover:bg-rose-500'
-                : 'bg-purple-600 hover:bg-purple-500'
+                ? 'bg-rose-600 hover:bg-rose-500 text-white'
+                : 'bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-400 hover:to-rose-400 text-[#180832]'
             }`}
           >
             {confirmRequest.confirmLabel}

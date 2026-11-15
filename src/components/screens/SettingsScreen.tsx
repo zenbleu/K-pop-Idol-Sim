@@ -45,19 +45,19 @@ export const SettingsScreen: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="pixel-title text-white">Statistics, Saves & Settings</h1>
+        <h1 className="pixel-title text-[#fffdf7]">Statistics, Saves & Settings</h1>
         <p className="pixel-micro text-purple-200 mt-1">
           Inspect live company analytics, manage multiple local save slots, export/import JSON, or reset.
         </p>
       </div>
 
       {/* Company & Career Statistics */}
-      <section className="rounded-xl bg-[#2e1065] border border-purple-300/25 p-5 space-y-4">
-        <h2 className="pixel-subtitle text-fuchsia-300">Company Statistics</h2>
+      <section className="rounded-xl bg-[#240e44] border border-purple-300/25 p-5 space-y-4">
+        <h2 className="pixel-subtitle text-amber-300">Company Statistics</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-          <div className="rounded-lg bg-[#1e0b4b] p-3 border border-purple-300/15">
-            <div className="pixel-micro text-purple-300">Money</div>
-            <div className="pixel-micro text-emerald-300 mt-1">{formatWon(state.company.money)}</div>
+          <div className="rounded-lg bg-[#15072c] p-3 border border-purple-300/15">
+            <div className="pixel-micro text-purple-200">Money</div>
+            <div className="pixel-micro text-amber-300 mt-1">{formatWon(state.company.money)}</div>
           </div>
           <div className="rounded-lg bg-[#1e0b4b] p-3 border border-purple-300/15">
             <div className="pixel-micro text-purple-300">Rubies</div>
@@ -106,22 +106,22 @@ export const SettingsScreen: React.FC = () => {
 
       {/* Save Slots & Export/Import */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <section className="rounded-xl bg-[#2e1065] border border-purple-300/25 p-5 space-y-4">
-          <h2 className="pixel-subtitle text-white">Local Save Slots</h2>
+        <section className="rounded-xl bg-[#240e44] border border-purple-300/25 p-5 space-y-4">
+          <h2 className="pixel-subtitle text-[#fffdf7]">Local Save Slots</h2>
           <div className="space-y-2.5">
             {SAVE_SLOTS.map((slotId, idx) => {
               const meta = slots[slotId];
               return (
                 <div
                   key={slotId}
-                  className="rounded-lg bg-[#1e0b4b] p-3 border border-purple-300/20 flex flex-wrap items-center justify-between gap-2"
+                  className="rounded-lg bg-[#15072c] p-3 border border-purple-300/20 flex flex-wrap items-center justify-between gap-2"
                 >
                   <div className="min-w-0">
-                    <div className="pixel-micro text-white">
+                    <div className="pixel-micro text-[#fffdf7]">
                       Slot {idx + 1}: {meta ? meta.label : 'Empty'}
                     </div>
                     {meta && (
-                      <div className="text-[8px] text-purple-300 mt-1">
+                      <div className="text-[8px] text-amber-300 mt-1">
                         Tier {meta.tierDisplay} · {formatWon(meta.money)}
                       </div>
                     )}
@@ -133,7 +133,7 @@ export const SettingsScreen: React.FC = () => {
                         actions.saveSlot(slotId);
                         refreshSlots();
                       }}
-                      className="px-2.5 py-1.5 rounded bg-purple-600 hover:bg-purple-500 text-white pixel-micro cursor-pointer"
+                      className="px-2.5 py-1.5 rounded bg-orange-500 hover:bg-orange-400 text-[#180832] font-bold pixel-micro cursor-pointer"
                     >
                       Save
                     </button>
@@ -142,7 +142,7 @@ export const SettingsScreen: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => actions.loadSlot(slotId)}
-                          className="px-2.5 py-1.5 rounded bg-indigo-700 hover:bg-indigo-600 text-white pixel-micro cursor-pointer"
+                          className="px-2.5 py-1.5 rounded bg-teal-500 hover:bg-teal-400 text-[#180832] font-bold pixel-micro cursor-pointer"
                         >
                           Load
                         </button>
@@ -174,20 +174,20 @@ export const SettingsScreen: React.FC = () => {
           </div>
         </section>
 
-        <section className="rounded-xl bg-[#2e1065] border border-purple-300/25 p-5 space-y-4">
-          <h2 className="pixel-subtitle text-white">Export & Import Save</h2>
+        <section className="rounded-xl bg-[#240e44] border border-purple-300/25 p-5 space-y-4">
+          <h2 className="pixel-subtitle text-[#fffdf7]">Export & Import Save</h2>
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
               onClick={handleExport}
-              className="px-3.5 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white pixel-micro cursor-pointer"
+              className="px-3.5 py-2 rounded-lg bg-[#31145c] hover:bg-[#411d75] border border-purple-300/30 text-[#fffdf7] pixel-micro cursor-pointer"
             >
               Generate Export JSON
             </button>
             <button
               type="button"
               onClick={handleDownloadExport}
-              className="px-3.5 py-2 rounded-lg bg-indigo-700 hover:bg-indigo-600 text-white pixel-micro cursor-pointer"
+              className="px-3.5 py-2 rounded-lg bg-teal-500 hover:bg-teal-400 text-[#180832] font-bold pixel-micro cursor-pointer"
             >
               Download .json File
             </button>

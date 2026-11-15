@@ -2,6 +2,7 @@ import {
   ACTIVITY_CONFIG,
   PERSONALITY_CONFIG,
   REPUTATION_ORDER,
+  SCHEDULE_ACTIVITY_DEFINITIONS,
   VENUES,
 } from '../../config/gameConfig';
 import {
@@ -14,7 +15,10 @@ import { advanceGameWeeks, formatGameDateShort, WEEKDAYS } from '../utils/date';
 import { clamp, createId } from '../utils/ids';
 import { generateWeeklyTrends } from './initialState';
 import { computeAlbumQuality, syncAlbumSalesProgress } from './production';
-import { resolveActivityParticipants } from './schedule';
+import {
+  resolveActivityParticipants,
+  rollWeeklyPActivityAvailabilityForState,
+} from './schedule';
 import { evaluateCompanyProgression, getTierFromRating, syncIdolRatingAndTier } from './stats';
 
 function maybeGenerateRandomEvent(state: GameState): {
@@ -212,7 +216,35 @@ export function advanceWeekSimulation(
     );
 
     for (const act of dayActivities) {
-      const cfg = ACTIVITY_CONFIG[act.activityType];
+      const legacyCfg = ACTIVITY_CONFIG[act.activityType];
+      const def = act.activityId
+        ? SCHEDULE_ACTIVITY_DEFINITIONS.find((d) => d.id === act.activityId) ?? null
+        : null;
+      const activityLabel = def?.label ?? act.notes ?? act.activityType;
+      const staminaCost = def?.staminaCost ?? legacyCfg.staminaCost;
+      const fatigueDelta = def?.fatigueDelta ?? legacyCfg.fatigueDelta;
+      const staminaRestore =
+        def?.staminaRestore ??
+        (act.activityType === 'Rest & Recovery'
+          ? 30
+          : act.activityType === 'Artist Vacation'
+            ? 55
+            : 0);
+      const loyaltyDelta =
+        def?.loyaltyDelta ??
+        (act.activityType === 'Artist Vacation'
+          ? 6
+          : act.activityType === 'Fanmeeting'
+            ? 3
+            : 0);
+      const statTrained = def?.statTrained ?? legacyCfg.statTrained;
+      const popularityDelta = def?.popularityDelta ?? legacyCfg.popularityDelta;
+      const fanGainBase = def?.fanGainBase ?? legacyCfg.fanGainBase;
+      const isRestActivity =
+        def?.category === 'Rest' ||
+        act.activityType === 'Rest & Recovery' ||
+        act.activityType === 'Artist Vacation';
+
       const participants = resolveActivityParticipants(
         working,
         act.targetType,
@@ -221,12 +253,12 @@ export function advanceWeekSimulation(
 
       // Re-verify funds & stamina at execution time
       if (act.estimatedCost > 0 && working.company.money < act.estimatedCost) {
-        activityLogs.push(`${day}: Skipped ${act.activityType} (${act.targetName}) — insufficient funds.`);
+        activityLogs.push(`${day}: Skipped ${activityLabel} (${act.targetName}) — insufficient funds.`);
         continue;
       }
 
-      if (cfg.staminaCost > 0 && participants.some((p) => p.currentStamina < cfg.staminaCost)) {
-        activityLogs.push(`${day}: Skipped ${act.activityType} (${act.targetName}) — low stamina.`);
+      if (staminaCost > 0 && participants.some((p) => p.currentStamina < staminaCost)) {
+        activityLogs.push(`${day}: Skipped ${activityLabel} (${act.targetName}) — low stamina.`);
         continue;
       }
 
@@ -278,7 +310,7 @@ export function advanceWeekSimulation(
       // Apply stamina, fatigue, training, popularity, fan gains
       const participantIds = new Set(participants.map((p) => p.id));
       let fanGainForAct = Math.round(
-        cfg.fanGainBase * (1 + REPUTATION_ORDER.indexOf(working.company.reputation) * 0.25) * prBoost
+        fanGainBase * (1 + REPUTATION_ORDER.indexOf(working.company.reputation) * 0.25) * prBoost
       );
       if (participants.length > 0) {
         const avgPopMult =
@@ -299,27 +331,26 @@ export function advanceWeekSimulation(
           let nextLoyalty = idol.loyalty;
           const nextStats = { ...idol.stats };
 
-          if (act.activityType === 'Rest & Recovery') {
-            nextStamina = clamp(nextStamina + 30, 0, 100);
-            nextFatigue = clamp(nextFatigue - 26, 0, 100);
-          } else if (act.activityType === 'Artist Vacation') {
-            nextStamina = clamp(nextStamina + 55, 0, 100);
-            nextFatigue = clamp(nextFatigue - 45, 0, 100);
-            nextLoyalty = clamp(nextLoyalty + 6, 0, 100);
+          if (isRestActivity) {
+            nextStamina = clamp(nextStamina + staminaRestore, 0, 100);
+            nextFatigue = clamp(nextFatigue + fatigueDelta, 0, 100);
+            if (loyaltyDelta > 0) {
+              nextLoyalty = clamp(nextLoyalty + loyaltyDelta, 0, 100);
+            }
           } else {
-            nextStamina = clamp(nextStamina - cfg.staminaCost, 0, 100);
+            nextStamina = clamp(nextStamina - staminaCost, 0, 100);
             nextFatigue = clamp(
-              nextFatigue + Math.round(cfg.fatigueDelta * pCfg.fatigueMult * hrFatigueMult),
+              nextFatigue + Math.round(fatigueDelta * pCfg.fatigueMult * hrFatigueMult),
               0,
               100
             );
           }
 
-          if (cfg.statTrained) {
-            const currentVal = nextStats[cfg.statTrained];
+          if (statTrained) {
+            const currentVal = nextStats[statTrained];
             const gain = currentVal >= 95 ? 1 : currentVal >= 75 ? 1 : 2;
-            nextStats[cfg.statTrained] = clamp(currentVal + gain, 0, 100);
-            idolGrowthLogs.push(`${day}: ${idol.stageName} +${gain} ${cfg.statTrained}`);
+            nextStats[statTrained] = clamp(currentVal + gain, 0, 100);
+            idolGrowthLogs.push(`${day}: ${idol.stageName} +${gain} ${statTrained}`);
           }
 
           const updated = syncIdolRatingAndTier({
@@ -327,7 +358,7 @@ export function advanceWeekSimulation(
             currentStamina: nextStamina,
             fatigue: nextFatigue,
             loyalty: nextLoyalty,
-            popularity: clamp(idol.popularity + Math.ceil(cfg.popularityDelta * 0.6), 0, 100),
+            popularity: clamp(idol.popularity + Math.ceil(popularityDelta * 0.6), 0, 100),
             fanbase: idol.fanbase + Math.round(fanGainForAct / Math.max(1, participants.length)),
             stats: nextStats,
           });
@@ -335,7 +366,7 @@ export function advanceWeekSimulation(
         }),
       };
 
-      // Update group / solo fanbase & popularity
+      // Update group / solo fanbase, popularity & tier
       if (act.targetType === 'Group') {
         working = {
           ...working,
@@ -348,14 +379,10 @@ export function advanceWeekSimulation(
                 : 0;
             return {
               ...g,
-              popularity: clamp(g.popularity + cfg.popularityDelta, 0, 100),
+              popularity: clamp(g.popularity + popularityDelta, 0, 100),
               fanbase: g.fanbase + fanGainForAct,
               weeklyFanGrowth: g.weeklyFanGrowth + fanGainForAct,
-              loyalty: clamp(
-                g.loyalty + (act.activityType === 'Fanmeeting' || act.activityType === 'Artist Vacation' ? 3 : 0),
-                0,
-                100
-              ),
+              loyalty: clamp(g.loyalty + (loyaltyDelta > 0 ? Math.min(3, loyaltyDelta) : 0), 0, 100),
               tier: getTierFromRating(avg),
             };
           }),
@@ -364,16 +391,17 @@ export function advanceWeekSimulation(
       } else if (act.targetType === 'Solo') {
         working = {
           ...working,
-          soloArtists: working.soloArtists.map((s) =>
-            s.id === act.targetId
-              ? {
-                  ...s,
-                  popularity: clamp(s.popularity + cfg.popularityDelta, 0, 100),
-                  fanbase: s.fanbase + fanGainForAct,
-                  weeklyFanGrowth: s.weeklyFanGrowth + fanGainForAct,
-                }
-              : s
-          ),
+          soloArtists: working.soloArtists.map((s) => {
+            if (s.id !== act.targetId) return s;
+            const linkedIdol = working.idols.find((i) => i.id === s.idolId);
+            return {
+              ...s,
+              popularity: clamp(s.popularity + popularityDelta, 0, 100),
+              fanbase: s.fanbase + fanGainForAct,
+              weeklyFanGrowth: s.weeklyFanGrowth + fanGainForAct,
+              tier: linkedIdol ? linkedIdol.tier : s.tier,
+            };
+          }),
         };
         weekFansGained += fanGainForAct;
       } else if (act.activityType === 'Company Promotion') {
@@ -395,8 +423,8 @@ export function advanceWeekSimulation(
         weekFansGained += fanGainForAct * (working.groups.length + working.soloArtists.length);
       }
 
-      // Recording Session advances active production
-      if (act.activityType === 'Recording Session') {
+      // Legacy Recording Session advances active production
+      if (!def && act.activityType === 'Recording Session') {
         working = {
           ...working,
           releases: working.releases.map((rel) => {
@@ -415,13 +443,17 @@ export function advanceWeekSimulation(
       }
 
       activitiesCompleted++;
-      activityLogs.push(`${day}: Completed ${act.activityType} (${act.targetName}).`);
+      activityLogs.push(`${day}: Completed ${activityLabel} (${act.targetName}).`);
     }
 
     // Gentle daily overnight recovery for idols who had no work that day
     const workedTodayIds = new Set<string>();
     for (const act of dayActivities) {
-      if (ACTIVITY_CONFIG[act.activityType].staminaCost > 0) {
+      const def = act.activityId
+        ? SCHEDULE_ACTIVITY_DEFINITIONS.find((d) => d.id === act.activityId) ?? null
+        : null;
+      const cost = def?.staminaCost ?? ACTIVITY_CONFIG[act.activityType].staminaCost;
+      if (cost > 0) {
         for (const p of resolveActivityParticipants(working, act.targetType, act.targetId)) {
           workedTodayIds.add(p.id);
         }
@@ -670,6 +702,10 @@ export function advanceWeekSimulation(
   // 6. Advance Calendar Date by 1 Week (7 Days) & Clear Completed Plan
   const nextDate = advanceGameWeeks(working.date, 1);
   const nextTrends = generateWeeklyTrends(nextDate.totalWeeks);
+  const nextWeeklyPActivityAvailability = rollWeeklyPActivityAvailabilityForState(
+    working,
+    nextDate
+  );
 
   // 7. Re-evaluate Company Tier & Reputation
   const prog = evaluateCompanyProgression(working);
@@ -719,6 +755,7 @@ export function advanceWeekSimulation(
     trends: nextTrends,
     pendingEvent: eventRes.eventChoice ?? working.pendingEvent,
     weeklyPlan: [], // Clear week's completed/past plan so activities never process twice
+    weeklyPActivityAvailability: nextWeeklyPActivityAvailability,
     company: {
       ...working.company,
       companyScore: prog.score,

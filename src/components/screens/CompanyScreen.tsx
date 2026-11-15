@@ -61,7 +61,7 @@ export const CompanyScreen: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="pixel-title text-white">Company Management</h1>
+          <h1 className="pixel-title text-[#fffdf7]">Company Management</h1>
           <p className="pixel-micro text-purple-200 mt-1">
             Click any idol card to open their Profile Modal. Manage Groups, Soloists, and Trainees.
           </p>
@@ -69,7 +69,7 @@ export const CompanyScreen: React.FC = () => {
         <button
           type="button"
           onClick={() => setShowCreateGroup((v) => !v)}
-          className="px-4 py-2.5 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 text-white pixel-micro cursor-pointer"
+          className="px-4 py-2.5 rounded-lg bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-400 hover:to-rose-400 text-[#180832] font-bold pixel-micro cursor-pointer"
         >
           {showCreateGroup
             ? 'Close Group Form'
@@ -81,9 +81,9 @@ export const CompanyScreen: React.FC = () => {
       {showCreateGroup && (
         <form
           onSubmit={handleCreateGroup}
-          className="rounded-xl bg-[#2e1065] border border-fuchsia-400/40 p-5 space-y-4"
+          className="rounded-xl bg-[#240e44] border border-orange-400/50 p-5 space-y-4"
         >
-          <h2 className="pixel-subtitle text-fuchsia-300">Form New Idol Group</h2>
+          <h2 className="pixel-subtitle text-amber-300">Form New Idol Group</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label htmlFor="grp-name" className="block pixel-micro text-purple-200 mb-1.5">
@@ -171,7 +171,7 @@ export const CompanyScreen: React.FC = () => {
           <div className="flex justify-end">
             <button
               type="submit"
-              className="px-5 py-2.5 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 text-white pixel-micro cursor-pointer"
+              className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-400 hover:to-rose-400 text-[#180832] font-bold pixel-micro cursor-pointer"
             >
               Debut Group
             </button>
@@ -179,18 +179,18 @@ export const CompanyScreen: React.FC = () => {
         </form>
       )}
 
-      {/* PDF Page 10: Strict 3-Column Composition (Col 1: Idols | Col 2: Group/Solo | Col 3: Trainees) */}
+      {/* Strict 3-Column Composition (Col 1: Idols | Col 2: Group/Solo | Col 3: Trainees) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start">
         {/* Column 1: Debuted Idols */}
         <section
           aria-label="Idols Column"
-          className="rounded-xl bg-[#2e1065] border border-purple-300/25 p-4 space-y-3"
+          className="rounded-xl bg-[#240e44] border border-purple-300/25 p-4 space-y-3"
         >
           <div className="flex items-center justify-between border-b border-purple-300/20 pb-2.5">
-            <h2 className="pixel-subtitle text-white">Idols ({debutedIdols.length})</h2>
+            <h2 className="pixel-subtitle text-[#fffdf7]">Idols ({debutedIdols.length})</h2>
           </div>
           {debutedIdols.length === 0 ? (
-            <p className="pixel-micro text-purple-300">
+            <p className="pixel-micro text-purple-200">
               No debuted idols yet. Form a group or debut a trainee as a solo artist.
             </p>
           ) : (
@@ -203,7 +203,7 @@ export const CompanyScreen: React.FC = () => {
                     type="button"
                     data-testid={`idol-card-${idol.id}`}
                     onClick={() => openIdolProfile(idol.id)}
-                    className="w-full flex items-center gap-3 p-3 rounded-lg bg-[#1e0b4b] hover:bg-purple-900/60 border border-purple-300/20 text-left cursor-pointer"
+                    className="w-full flex items-center gap-3 p-3 rounded-lg bg-[#15072c] hover:bg-[#31145c] border border-purple-300/20 hover:border-amber-300/50 text-left cursor-pointer transition-colors"
                   >
                     <IdolPortrait
                       gender={idol.gender}
@@ -213,15 +213,15 @@ export const CompanyScreen: React.FC = () => {
                     />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-2">
-                        <span className="pixel-micro text-white truncate">{idol.stageName}</span>
-                        <span className="pixel-micro text-fuchsia-300 shrink-0">
+                        <span className="pixel-micro text-[#fffdf7] truncate">{idol.stageName}</span>
+                        <span className="pixel-micro text-amber-300 shrink-0">
                           {idol.tier} ({idol.overallRating})
                         </span>
                       </div>
                       <div className="text-[8px] text-purple-200 mt-1 truncate">
                         {grp ? grp.name : 'Solo Artist'} · Pop {idol.popularity} · Loy {idol.loyalty}
                       </div>
-                      <div className="text-[8px] text-purple-300 mt-0.5">
+                      <div className="text-[8px] text-teal-300 mt-0.5">
                         Sta {idol.currentStamina}% · Fat {idol.fatigue}%
                       </div>
                     </div>
@@ -235,10 +235,10 @@ export const CompanyScreen: React.FC = () => {
         {/* Column 2: Group / Solo */}
         <section
           aria-label="Group and Solo Column"
-          className="rounded-xl bg-[#2e1065] border border-purple-300/25 p-4 space-y-4"
+          className="rounded-xl bg-[#240e44] border border-purple-300/25 p-4 space-y-4"
         >
           <div className="flex items-center justify-between border-b border-purple-300/20 pb-2.5">
-            <h2 className="pixel-subtitle text-white">
+            <h2 className="pixel-subtitle text-[#fffdf7]">
               Group / Solo ({state.groups.length + state.soloArtists.length})
             </h2>
           </div>
@@ -253,12 +253,12 @@ export const CompanyScreen: React.FC = () => {
               return (
                 <div
                   key={grp.id}
-                  className="rounded-xl bg-[#1e0b4b] border border-purple-300/25 p-3.5 space-y-3"
+                  className="rounded-xl bg-[#15072c] border border-purple-300/25 p-3.5 space-y-3"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <div className="pixel-subtitle text-white">{grp.name}</div>
-                      <div className="text-[8px] text-purple-300 mt-1">
+                      <div className="pixel-subtitle text-[#fffdf7]">{grp.name}</div>
+                      <div className="text-[8px] text-amber-300 mt-1">
                         {grp.gender} Group · Tier {grp.tier} · {members.length} members
                       </div>
                     </div>
@@ -267,7 +267,7 @@ export const CompanyScreen: React.FC = () => {
                       onClick={() =>
                         setExpandedGroupId(isExpanded ? null : grp.id)
                       }
-                      className="px-2.5 py-1.5 rounded bg-purple-700 hover:bg-purple-600 text-white text-[8px] cursor-pointer"
+                      className="px-2.5 py-1.5 rounded bg-[#31145c] hover:bg-[#411d75] border border-purple-300/30 text-[#fffdf7] text-[8px] cursor-pointer"
                     >
                       {isExpanded ? 'Hide Details' : 'Manage'}
                     </button>
@@ -432,13 +432,13 @@ export const CompanyScreen: React.FC = () => {
         {/* Column 3: Trainees */}
         <section
           aria-label="Trainees Column"
-          className="rounded-xl bg-[#2e1065] border border-purple-300/25 p-4 space-y-3"
+          className="rounded-xl bg-[#240e44] border border-purple-300/25 p-4 space-y-3"
         >
           <div className="flex items-center justify-between border-b border-purple-300/20 pb-2.5">
-            <h2 className="pixel-subtitle text-white">Trainees ({trainees.length})</h2>
+            <h2 className="pixel-subtitle text-[#fffdf7]">Trainees ({trainees.length})</h2>
           </div>
           {trainees.length === 0 ? (
-            <p className="pixel-micro text-purple-300">
+            <p className="pixel-micro text-purple-200">
               No trainees on roster. Scout new talent in Auditions.
             </p>
           ) : (
@@ -448,7 +448,7 @@ export const CompanyScreen: React.FC = () => {
                 return (
                   <div
                     key={idol.id}
-                    className="rounded-lg bg-[#1e0b4b] border border-purple-300/20 p-3 space-y-2"
+                    className="rounded-lg bg-[#15072c] border border-purple-300/20 p-3 space-y-2"
                   >
                     <button
                       type="button"
@@ -464,10 +464,10 @@ export const CompanyScreen: React.FC = () => {
                       />
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between gap-2">
-                          <span className="pixel-micro text-white truncate">
+                          <span className="pixel-micro text-[#fffdf7] truncate">
                             {idol.stageName}
                           </span>
-                          <span className="pixel-micro text-fuchsia-300 shrink-0">
+                          <span className="pixel-micro text-amber-300 shrink-0">
                             {idol.tier} ({idol.overallRating})
                           </span>
                         </div>

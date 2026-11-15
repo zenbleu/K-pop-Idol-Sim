@@ -58,6 +58,7 @@ import {
 } from '../logic/production';
 import {
   addPlannedActivity,
+  ensureWeeklyPActivityAvailability,
   removePlannedActivity,
   updatePlannedActivity,
 } from '../logic/schedule';
@@ -151,6 +152,7 @@ interface GameContextValue {
     addActivity: (params: {
       day: Weekday;
       activityType: ActivityType;
+      activityId?: string;
       targetType: 'Idol' | 'Group' | 'Solo' | 'Company';
       targetId: string;
       notes?: string;
@@ -160,6 +162,7 @@ interface GameContextValue {
       params: {
         day: Weekday;
         activityType: ActivityType;
+        activityId?: string;
         targetType: 'Idol' | 'Group' | 'Solo' | 'Company';
         targetId: string;
       }
@@ -231,10 +234,10 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const notify = useCallback((kind: ToastMessage['kind'], text: string) => {
     const id = `toast_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
-    setToasts((prev) => [...prev.slice(-3), { id, kind, text }]);
+    setToasts((prev) => [...prev.slice(-1), { id, kind, text }]);
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
-    }, 4000);
+    }, 3000);
   }, []);
 
   const dismissToast = useCallback((id: string) => {
@@ -246,6 +249,23 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     document.body.dataset.state = state.initialized ? 'playing' : 'title';
   }, [state.initialized]);
 
+  // Ensure P-tier weekly schedule availability is populated & persisted once per week
+  const pTierSignature =
+    state.groups
+      .filter((g) => g.tier === 'P')
+      .map((g) => g.id)
+      .join(',') +
+    '|' +
+    state.soloArtists
+      .filter((s) => s.tier === 'P')
+      .map((s) => s.id)
+      .join(',');
+
+  useEffect(() => {
+    if (!state.initialized) return;
+    setState((prev) => ensureWeeklyPActivityAvailability(prev));
+  }, [state.initialized, state.date.totalWeeks, pTierSignature]);
+
   // Autosave whenever initialized state changes
   useEffect(() => {
     if (state.initialized && state.settings.autosaveEnabled) {
@@ -253,13 +273,13 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [state]);
 
+  const hasActiveSales = state.releases.some(
+    (r) => r.status === 'Promoting' && !r.salesCompleted
+  );
+
   // Real-time 10-minute album sales ticker + offline catch-up
   useEffect(() => {
-    if (!state.initialized) return;
-    const hasActiveSales = state.releases.some(
-      (r) => r.status === 'Promoting' && !r.salesCompleted
-    );
-    if (!hasActiveSales) return;
+    if (!state.initialized || !hasActiveSales) return;
 
     const timer = window.setInterval(() => {
       setState((prev) => {
@@ -269,10 +289,10 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
         return res.state;
       });
-    }, 1000);
+    }, 2000);
 
     return () => window.clearInterval(timer);
-  }, [state.initialized, state.releases, notify]);
+  }, [state.initialized, hasActiveSales, notify]);
 
   // Sync offline progress on tab focus
   useEffect(() => {
@@ -465,7 +485,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return false;
       }
       setState(res.state);
-      notify('success', `Added ${params.activityType} to ${params.day}.`);
+      notify('success', `Added ${res.activityLabel ?? params.activityType} to ${params.day}.`);
       return true;
     },
     editActivity: (activityId, params) => {

@@ -65,6 +65,8 @@ export function migrateGameState(raw: unknown): GameState | null {
       ...base.facilities,
       ...((obj.facilities as GameState['facilities']) ?? {}),
     },
+    weeklyPActivityAvailability:
+      (obj.weeklyPActivityAvailability as GameState['weeklyPActivityAvailability']) ?? {},
     settings: {
       ...base.settings,
       ...((obj.settings as GameState['settings']) ?? {}),

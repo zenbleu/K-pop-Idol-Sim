@@ -80,22 +80,22 @@ export const ProductionScreen: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="pixel-title text-white">Music Production</h1>
+          <h1 className="pixel-title text-[#fffdf7]">Music Production</h1>
           <p className="pixel-micro text-purple-200 mt-1">
-            Trends: {state.trends.trendingGenres.join(', ')} ·{' '}
-            {state.trends.trendingConcepts.join(', ')}
+            Trends: <span className="text-amber-300">{state.trends.trendingGenres.join(', ')}</span> ·{' '}
+            <span className="text-pink-300">{state.trends.trendingConcepts.join(', ')}</span>
           </p>
         </div>
       </div>
 
-      {/* PDF Page 6: Two-Column Layout (Left: New Production Form, Right: Active Production & Live Sales) */}
+      {/* Two-Column Layout */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* Panel 1: New Production */}
         <form
           onSubmit={handleStart}
-          className="rounded-xl bg-[#2e1065] border border-purple-300/25 p-5 space-y-4"
+          className="rounded-xl bg-[#240e44] border border-purple-300/25 p-5 space-y-4 shadow-lg"
         >
-          <h2 className="pixel-subtitle text-fuchsia-300">1. New Production</h2>
+          <h2 className="pixel-subtitle text-amber-300">1. New Production</h2>
 
           {artists.length === 0 ? (
             <div className="rounded-lg bg-[#1e0b4b] p-4 border border-purple-300/20 pixel-micro text-amber-300">
@@ -149,12 +149,12 @@ export const ProductionScreen: React.FC = () => {
                       onClick={() => setReleaseType(rt)}
                       className={`p-2.5 rounded-lg border text-center cursor-pointer ${
                         releaseType === rt
-                          ? 'bg-fuchsia-600 border-fuchsia-300 text-white'
-                          : 'bg-[#1e0b4b] border-purple-300/20 text-purple-200 hover:bg-purple-900/60'
+                          ? 'bg-gradient-to-r from-orange-500 to-rose-500 border-amber-300 text-[#180832] font-bold'
+                          : 'bg-[#15072c] border-purple-300/20 text-purple-200 hover:bg-[#31145c]'
                       }`}
                     >
                       <div className="pixel-micro">{rt}</div>
-                      <div className="text-[8px] text-purple-200 mt-1">
+                      <div className="text-[8px] opacity-85 mt-1">
                         {RELEASE_TYPE_CONFIG[rt].durationWeeks} wk(s)
                       </div>
                     </button>
@@ -266,11 +266,11 @@ export const ProductionScreen: React.FC = () => {
 
               <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-purple-300/20">
                 <div className="pixel-micro text-purple-200">
-                  Total Cost: <span className="text-white">{formatWon(totalEstimatedCost)}</span>
+                  Total Cost: <span className="text-amber-300">{formatWon(totalEstimatedCost)}</span>
                 </div>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-fuchsia-600 to-purple-600 hover:from-fuchsia-500 hover:to-purple-500 text-white pixel-micro cursor-pointer"
+                  className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-400 hover:to-rose-400 text-[#180832] font-bold pixel-micro cursor-pointer"
                 >
                   Start Production
                 </button>
@@ -281,8 +281,8 @@ export const ProductionScreen: React.FC = () => {
 
         {/* Panel 2: Active Productions & Live Sales */}
         <div className="space-y-5">
-          <div className="rounded-xl bg-[#2e1065] border border-purple-300/25 p-5 space-y-4">
-            <h2 className="pixel-subtitle text-white">Active Productions</h2>
+          <div className="rounded-xl bg-[#240e44] border border-purple-300/25 p-5 space-y-4 shadow-lg">
+            <h2 className="pixel-subtitle text-[#fffdf7]">Active Productions</h2>
             {activeProjects.length === 0 ? (
               <p className="pixel-micro text-purple-300">
                 No releases currently in production.
@@ -326,7 +326,7 @@ export const ProductionScreen: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => actions.recordProduction(proj.id)}
-                          className="px-3.5 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white pixel-micro cursor-pointer"
+                          className="px-3.5 py-2 rounded-lg bg-[#31145c] hover:bg-[#411d75] border border-purple-300/30 text-[#fffdf7] pixel-micro cursor-pointer"
                         >
                           Record Track
                         </button>
@@ -334,10 +334,10 @@ export const ProductionScreen: React.FC = () => {
                           type="button"
                           disabled={!readyToRelease}
                           onClick={() => actions.releaseAlbum(proj.id)}
-                          className={`px-3.5 py-2 rounded-lg pixel-micro ${
+                          className={`px-3.5 py-2 rounded-lg pixel-micro font-bold ${
                             readyToRelease
-                              ? 'bg-fuchsia-600 hover:bg-fuchsia-500 text-white cursor-pointer'
-                              : 'bg-purple-950 text-purple-400 cursor-not-allowed'
+                              ? 'bg-teal-500 hover:bg-teal-400 text-[#180832] cursor-pointer'
+                              : 'bg-[#170833] text-purple-400 cursor-not-allowed'
                           }`}
                         >
                           {readyToRelease
@@ -353,8 +353,8 @@ export const ProductionScreen: React.FC = () => {
           </div>
 
           {/* Live 10-Minute Album Sales */}
-          <div className="rounded-xl bg-[#2e1065] border border-purple-300/25 p-5 space-y-4">
-            <h2 className="pixel-subtitle text-white">Live Sales (10-Min Real-Time)</h2>
+          <div className="rounded-xl bg-[#240e44] border border-purple-300/25 p-5 space-y-4 shadow-lg">
+            <h2 className="pixel-subtitle text-[#fffdf7]">Live Sales (10-Min Real-Time)</h2>
             {livePromos.length === 0 ? (
               <p className="pixel-micro text-purple-300">
                 No active sales cycles running. Release an album to start real-time & offline sales.
@@ -405,8 +405,8 @@ export const ProductionScreen: React.FC = () => {
       </div>
 
       {/* Completed Discography */}
-      <div className="rounded-xl bg-[#2e1065] border border-purple-300/20 p-5 space-y-3">
-        <h2 className="pixel-subtitle text-white">Discography & Sales History</h2>
+      <div className="rounded-xl bg-[#240e44] border border-purple-300/25 p-5 space-y-3">
+        <h2 className="pixel-subtitle text-[#fffdf7]">Discography & Sales History</h2>
         {completedReleases.length === 0 ? (
           <p className="pixel-micro text-purple-300">No completed releases yet.</p>
         ) : (

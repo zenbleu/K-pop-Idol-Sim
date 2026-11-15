@@ -25,13 +25,13 @@ export const AgencyHQScreen: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="pixel-title text-white">Agency HQ Upgrades</h1>
+          <h1 className="pixel-title text-[#fffdf7]">Agency HQ Upgrades</h1>
           <p className="pixel-micro text-purple-200 mt-1">
             Expand group capacity, audition scouting, training licenses, and production tech.
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-1.5 bg-[#2e1065] p-1.5 rounded-lg border border-purple-300/20">
+        <div className="flex flex-wrap gap-1.5 bg-[#240e44] p-1.5 rounded-lg border border-purple-300/25">
           {(['All', ...BRANCHES] as const).map((b) => (
             <button
               key={b}
@@ -39,8 +39,8 @@ export const AgencyHQScreen: React.FC = () => {
               onClick={() => setBranchFilter(b)}
               className={`px-2.5 py-1.5 rounded pixel-micro cursor-pointer ${
                 branchFilter === b
-                  ? 'bg-fuchsia-600 text-white'
-                  : 'text-purple-200 hover:bg-purple-800/60'
+                  ? 'bg-gradient-to-r from-orange-500 to-rose-500 text-[#180832] font-bold'
+                  : 'text-purple-100 hover:bg-[#31145c]'
               }`}
             >
               {b}
@@ -71,24 +71,24 @@ export const AgencyHQScreen: React.FC = () => {
               data-testid={`hq-upgrade-${upg.id}`}
               className={`rounded-xl border p-5 flex flex-col justify-between gap-4 ${
                 purchased
-                  ? 'bg-[#2b125d] border-emerald-400/40'
+                  ? 'bg-[#240e44] border-teal-400/50'
                   : available
-                    ? 'bg-[#2e1065] border-purple-300/30'
-                    : 'bg-[#210b4c] border-purple-300/15 opacity-85'
+                    ? 'bg-[#240e44] border-purple-300/30'
+                    : 'bg-[#1a0936] border-purple-300/15 opacity-85'
               }`}
             >
               <div className="space-y-2.5">
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <div className="text-[8px] text-fuchsia-300">{upg.branch}</div>
-                    <h2 className="pixel-subtitle text-white mt-0.5">{upg.name}</h2>
+                    <div className="text-[8px] text-amber-300">{upg.branch}</div>
+                    <h2 className="pixel-subtitle text-[#fffdf7] mt-0.5">{upg.name}</h2>
                   </div>
                   <span
                     className={`pixel-micro shrink-0 ${
                       purchased
-                        ? 'text-emerald-300'
+                        ? 'text-teal-300'
                         : available
-                          ? 'text-fuchsia-300'
+                          ? 'text-orange-300'
                           : 'text-amber-300'
                     }`}
                   >
@@ -100,8 +100,8 @@ export const AgencyHQScreen: React.FC = () => {
                   {upg.description}
                 </p>
 
-                <div className="rounded-lg bg-[#1e0b4b] p-3 border border-purple-300/15 space-y-1">
-                  <div className="pixel-micro text-emerald-300">{upg.effectText}</div>
+                <div className="rounded-lg bg-[#15072c] p-3 border border-purple-300/15 space-y-1">
+                  <div className="pixel-micro text-teal-300">{upg.effectText}</div>
                   {!purchased && (
                     <div className="text-[8px] text-purple-300 pt-1">
                       Requires: Tier {upg.requiredTier} · {upg.requiredReputation} Rep
@@ -116,7 +116,7 @@ export const AgencyHQScreen: React.FC = () => {
 
               <div className="pt-2 border-t border-purple-300/20">
                 {purchased ? (
-                  <div className="w-full py-2 text-center rounded-lg bg-emerald-950/60 border border-emerald-400/30 text-emerald-300 pixel-micro">
+                  <div className="w-full py-2 text-center rounded-lg bg-teal-500/15 border border-teal-400/40 text-teal-200 pixel-micro">
                     Installed
                   </div>
                 ) : (
@@ -124,10 +124,10 @@ export const AgencyHQScreen: React.FC = () => {
                     type="button"
                     disabled={!available}
                     onClick={() => actions.buyHQUpgrade(upg.id)}
-                    className={`w-full py-2.5 px-4 rounded-lg pixel-micro ${
+                    className={`w-full py-2.5 px-4 rounded-lg pixel-micro font-bold ${
                       available
-                        ? 'bg-fuchsia-600 hover:bg-fuchsia-500 text-white cursor-pointer'
-                        : 'bg-purple-950 text-purple-400 cursor-not-allowed'
+                        ? 'bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-400 hover:to-rose-400 text-[#180832] cursor-pointer'
+                        : 'bg-[#170833] text-purple-400 cursor-not-allowed'
                     }`}
                   >
                     {available ? `Purchase (${costParts.join(' + ')})` : 'Requirements Not Met'}

@@ -25,11 +25,20 @@ import {
   startAlbumProduction,
   syncAlbumSalesProgress,
 } from './production';
-import { addPlannedActivity } from './schedule';
+import { debutSoloArtist } from './groups';
+import {
+  addPlannedActivity,
+  ensureWeeklyPActivityAvailability,
+  getScheduleLibraryForTarget,
+} from './schedule';
 import { advanceWeekSimulation } from './simulation';
 import { performPreparedConcert, planConcert, startTour } from './concerts';
 import { exportSaveJson, importSaveJson } from '../save/storage';
-import { STARTING_PROGRESSION } from '../../config/gameConfig';
+import {
+  SCHEDULE_ACTIVITY_DEFINITIONS,
+  SHOP_ITEMS,
+  STARTING_PROGRESSION,
+} from '../../config/gameConfig';
 import { IdolStats } from '../models/types';
 
 function makeStats(val: number): IdolStats {
@@ -287,44 +296,267 @@ test('income split lock during production/promotion and non-duplicating 10-min a
   assert.equal(splitAfter.ok, true);
 });
 
-test('weekly planner supports >4 activities per day, validates conflicts, and never double-processes', () => {
+test('all 36 schedule assets and 23 shop assets exist and exclude acting-audition.jpg', () => {
+  assert.equal(SHOP_ITEMS.length, 23);
+  const shopIds = new Set(SHOP_ITEMS.map((i) => i.id));
+  const shopPaths = new Set(SHOP_ITEMS.map((i) => i.imagePath));
+  assert.equal(shopIds.size, 23, 'Shop IDs must be unique');
+  assert.equal(shopPaths.size, 23, 'Shop imagePaths must be unique');
+
+  assert.equal(
+    SHOP_ITEMS.filter((i) => i.category === 'Clothes').length,
+    9
+  );
+  assert.equal(
+    SHOP_ITEMS.filter((i) => i.category === 'Food').length,
+    8
+  );
+  assert.equal(
+    SHOP_ITEMS.filter((i) => i.category === 'Accessories').length,
+    6
+  );
+
+  for (const item of SHOP_ITEMS) {
+    assert.equal(
+      fs.existsSync(path.join(process.cwd(), 'public', item.imagePath)),
+      true,
+      `Missing shop asset: ${item.imagePath}`
+    );
+  }
+
+  // Schedule assets: acting-audition.jpg must be excluded
+  assert.equal(
+    SCHEDULE_ACTIVITY_DEFINITIONS.some((d) => d.imagePath.includes('acting-audition')),
+    false,
+    'acting-audition.jpg must remain excluded from schedule activities'
+  );
+
+  for (const def of SCHEDULE_ACTIVITY_DEFINITIONS) {
+    assert.equal(
+      fs.existsSync(path.join(process.cwd(), 'public', def.imagePath)),
+      true,
+      `Missing schedule asset: ${def.imagePath}`
+    );
+  }
+});
+
+test('target-specific Production -> Schedule & Concert gating, weekday Music Shows, >4/day, and P-tier weekly reroll', () => {
   let state = createInitialGameState({ initialized: true });
   const aud = runMoneyAudition(state, 'Streets', 'Female');
   state = recruitCandidate(aud.state, aud.state.auditionPool[0].id).state;
+  state = recruitCandidate(state, state.auditionPool[0].id).state;
+
+  // Target A: Group AURORA, Target B: Soloist NOVA
   state = formGroup(state, {
     name: 'AURORA',
     gender: 'Female',
     memberIds: [state.idols[0].id],
   }).state;
-  const grpId = state.groups[0].id;
+  const soloRes = debutSoloArtist(state, state.idols[1].id);
+  assert.equal(soloRes.ok, true);
+  state = soloRes.state;
 
-  // Assign 5 distinct activities on Monday (proving no 4-activity cap)
-  const acts = ['Vocal Practice', 'Dance Practice', 'Radio Appearance', 'Variety Show', 'Brand Photoshoot'] as const;
-  for (const act of acts) {
-    const res = addPlannedActivity(state, {
-      day: 'Monday',
-      activityType: act,
+  const grpId = state.groups[0].id;
+  const soloId = state.soloArtists[0].id;
+
+  // Give both targets high popularity for concert testing later, keep tier F initially
+  state = {
+    ...state,
+    groups: state.groups.map((g) => ({ ...g, popularity: 55, fanbase: 6000 })),
+    soloArtists: state.soloArtists.map((s) => ({ ...s, popularity: 55, fanbase: 6000 })),
+  };
+
+  // 1. Pre-debut Target A can schedule Training, but CANNOT schedule Rest / Others / Music Shows or Concerts
+  const preLibA = getScheduleLibraryForTarget(state, 'Group', grpId);
+  assert.equal(preLibA.debuted, false);
+  assert.deepEqual(preLibA.eligibleCategories, ['Training']);
+
+  const preTrainOk = addPlannedActivity(state, {
+    day: 'Monday',
+    activityType: 'Vocal Practice',
+    activityId: 'trn_vocal',
+    targetType: 'Group',
+    targetId: grpId,
+  });
+  assert.equal(preTrainOk.ok, true);
+
+  for (const blockedId of ['act_rest', 'oth_radio', 'ms_the_show', 'cmp_weverse']) {
+    const blocked = addPlannedActivity(state, {
+      day: 'Tuesday',
+      activityType: 'Radio Appearance',
+      activityId: blockedId,
       targetType: 'Group',
       targetId: grpId,
     });
-    assert.equal(res.ok, true, `Failed adding ${act}: ${res.error}`);
-    state = res.state;
+    assert.equal(blocked.ok, false, `Pre-debut must block ${blockedId}`);
   }
-  assert.equal(state.weeklyPlan.length, 5);
+
+  const preConcertBlocked = planConcert(state, {
+    title: 'Pre-Debut Live',
+    scope: 'Domestic',
+    targetType: 'Group',
+    targetId: grpId,
+    venueSize: 'Small',
+    ticketPrice: 65_000,
+    marketingBudget: 1_000_000,
+  });
+  assert.equal(preConcertBlocked.ok, false);
+
+  // 2. Complete & release a Single ONLY for Target A (AURORA)
+  const prod = startAlbumProduction(state, {
+    targetType: 'Group',
+    targetId: grpId,
+    releaseType: 'Single',
+    title: 'Dawn Light',
+    genre: 'Pop',
+    concept: 'Pure',
+    writerId: 'staff_w1',
+    producerId: 'staff_p1',
+    marketingBudget: 500_000,
+  });
+  assert.equal(prod.ok, true);
+  state = recordForProduction(prod.state, prod.project!.id).state;
+  state = advanceWeekSimulation(state);
+  state = releaseAlbumToMarket(state, prod.project!.id, 500_000).state;
+
+  // Target A is now Debuted, Target B (Soloist) MUST still be Pre-Debut!
+  assert.equal(getScheduleLibraryForTarget(state, 'Group', grpId).debuted, true);
+  assert.equal(getScheduleLibraryForTarget(state, 'Solo', soloId).debuted, false);
+
+  const soloStillBlockedSchedule = addPlannedActivity(state, {
+    day: 'Monday',
+    activityType: 'Radio Appearance',
+    activityId: 'oth_radio',
+    targetType: 'Solo',
+    targetId: soloId,
+  });
+  assert.equal(soloStillBlockedSchedule.ok, false);
+
+  const soloStillBlockedConcert = planConcert(state, {
+    title: 'Solo Pre-Debut',
+    scope: 'Domestic',
+    targetType: 'Solo',
+    targetId: soloId,
+    venueSize: 'Small',
+    ticketPrice: 65_000,
+    marketingBudget: 500_000,
+  });
+  assert.equal(soloStillBlockedConcert.ok, false);
+
+  // 3. Music Show weekday validation + Tier/Facility gating for debuted Target A
+  const showWrongDay = addPlannedActivity(state, {
+    day: 'Monday',
+    activityType: 'Variety Show',
+    activityId: 'ms_the_show',
+    targetType: 'Group',
+    targetId: grpId,
+  });
+  assert.equal(showWrongDay.ok, false, 'The Show must fail on Monday');
+
+  const showRightDay = addPlannedActivity(state, {
+    day: 'Tuesday',
+    activityType: 'Variety Show',
+    activityId: 'ms_the_show',
+    targetType: 'Group',
+    targetId: grpId,
+  });
+  assert.equal(showRightDay.ok, true, `The Show should succeed on Tuesday: ${showRightDay.error}`);
+
+  // Tier & Facility gating: Main 2 Musical requires Tier B + facility ownership
+  const tierLocked = addPlannedActivity(state, {
+    day: 'Monday',
+    activityType: 'Vocal Practice',
+    activityId: 'trn_musical',
+    targetType: 'Group',
+    targetId: grpId,
+  });
+  assert.equal(tierLocked.ok, false);
+
+  // Promote Group A to Tier B without facility -> still blocked by facility requirement
+  let tierBState = {
+    ...state,
+    groups: state.groups.map((g) => (g.id === grpId ? { ...g, tier: 'B' as const } : g)),
+  };
+  const facilityLocked = addPlannedActivity(tierBState, {
+    day: 'Monday',
+    activityType: 'Vocal Practice',
+    activityId: 'trn_musical',
+    targetType: 'Group',
+    targetId: grpId,
+  });
+  assert.equal(facilityLocked.ok, false);
+
+  // Grant Main 2 facility -> now unlocked
+  tierBState = {
+    ...tierBState,
+    facilities: {
+      ...tierBState.facilities,
+      musical_lab: { id: 'musical_lab', level: 1 },
+    },
+  };
+  const facilityUnlocked = addPlannedActivity(tierBState, {
+    day: 'Monday',
+    activityType: 'Vocal Practice',
+    activityId: 'trn_musical',
+    targetType: 'Group',
+    targetId: grpId,
+  });
+  assert.equal(facilityUnlocked.ok, true);
+
+  // 4. Assign 5 distinct activities on Monday for debuted Group A (proving >4 activities/day)
+  let multiState = state;
+  const fiveIds = ['trn_vocal', 'trn_dance', 'trn_rap', 'oth_radio', 'cmp_weverse'];
+  for (const actId of fiveIds) {
+    const res = addPlannedActivity(multiState, {
+      day: 'Monday',
+      activityType: 'Vocal Practice',
+      activityId: actId,
+      targetType: 'Group',
+      targetId: grpId,
+    });
+    assert.equal(res.ok, true, `Failed adding ${actId}: ${res.error}`);
+    multiState = res.state;
+  }
+  assert.equal(multiState.weeklyPlan.length, 5);
 
   // Incompatible Rest on same day must be rejected
-  const conflict = addPlannedActivity(state, {
+  const conflict = addPlannedActivity(multiState, {
     day: 'Monday',
     activityType: 'Rest & Recovery',
+    activityId: 'act_rest',
     targetType: 'Group',
     targetId: grpId,
   });
   assert.equal(conflict.ok, false);
 
-  const afterWeek = advanceWeekSimulation(state);
-  assert.equal(afterWeek.date.week, 2);
+  const afterWeek = advanceWeekSimulation(multiState);
+  assert.equal(afterWeek.date.week, 3);
   assert.equal(afterWeek.weeklyPlan.length, 0);
   assert.equal(afterWeek.lastWeeklySummary?.activitiesCompleted, 5);
+
+  // 5. P-Tier weekly randomization persists within same week and rerolls on Next Week
+  let pState = ensureWeeklyPActivityAvailability({
+    ...state,
+    groups: state.groups.map((g) => (g.id === grpId ? { ...g, tier: 'P' as const } : g)),
+  });
+  const weekNIds = [...(pState.weeklyPActivityAvailability[`Group:${grpId}`]?.availableActivityIds ?? [])];
+  assert.ok(weekNIds.length >= 6);
+  const pStateSameWeek = ensureWeeklyPActivityAvailability(pState);
+  assert.deepEqual(
+    pStateSameWeek.weeklyPActivityAvailability[`Group:${grpId}`]?.availableActivityIds,
+    weekNIds
+  );
+  const pNextWeek = advanceWeekSimulation(pStateSameWeek);
+  const weekNPlus1Ids =
+    pNextWeek.weeklyPActivityAvailability[`Group:${grpId}`]?.availableActivityIds ?? [];
+  assert.equal(
+    pNextWeek.weeklyPActivityAvailability[`Group:${grpId}`]?.totalWeeks,
+    pNextWeek.date.totalWeeks
+  );
+  const sameOrderAndSet =
+    weekNIds.length === weekNPlus1Ids.length &&
+    weekNIds.every((id) => weekNPlus1Ids.includes(id));
+  assert.equal(sameOrderAndSet, false, 'P-tier availability must reroll across weeks');
 });
 
 test('concert venue capacity limits ticket sales and sellout unlocks tours', () => {
@@ -336,6 +568,24 @@ test('concert venue capacity limits ticket sales and sellout unlocks tours', () 
     gender: 'Female',
     memberIds: [state.idols[0].id],
   }).state;
+  const grpId = state.groups[0].id;
+
+  // Release a Single so SOLARIS is no longer pre-debut
+  const prod = startAlbumProduction(state, {
+    targetType: 'Group',
+    targetId: grpId,
+    releaseType: 'Single',
+    title: 'Solaris Debut',
+    genre: 'Pop',
+    concept: 'Cute',
+    writerId: 'staff_w1',
+    producerId: 'staff_p1',
+    marketingBudget: 500_000,
+  });
+  assert.equal(prod.ok, true);
+  state = recordForProduction(prod.state, prod.project!.id).state;
+  state = advanceWeekSimulation(state);
+  state = releaseAlbumToMarket(state, prod.project!.id, 500_000).state;
 
   // Boost popularity/fanbase so Small venue (800 cap) sells out
   state = {
@@ -347,7 +597,7 @@ test('concert venue capacity limits ticket sales and sellout unlocks tours', () 
     title: 'Solaris Debut Live',
     scope: 'Domestic',
     targetType: 'Group',
-    targetId: state.groups[0].id,
+    targetId: grpId,
     venueSize: 'Small',
     ticketPrice: 65_000,
     marketingBudget: 1_000_000,
@@ -364,7 +614,7 @@ test('concert venue capacity limits ticket sales and sellout unlocks tours', () 
   const tour = startTour(perf.state, {
     title: 'Korea Live Tour',
     targetType: 'Group',
-    targetId: perf.state.groups[0].id,
+    targetId: grpId,
     scope: 'Domestic',
     venueSize: 'Small',
     totalDates: 4,

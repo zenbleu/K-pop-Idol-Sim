@@ -16,8 +16,8 @@ export const ToastStack: React.FC = () => {
           t.kind === 'error'
             ? 'bg-rose-950/95 border-rose-400/60 text-rose-100'
             : t.kind === 'success'
-              ? 'bg-purple-900/95 border-fuchsia-400/70 text-white'
-              : 'bg-indigo-950/95 border-purple-300/50 text-purple-100';
+              ? 'bg-[#240e44]/95 border-teal-400/70 text-[#fffdf7]'
+              : 'bg-[#170833]/95 border-amber-300/50 text-purple-100';
         return (
           <div
             key={t.id}

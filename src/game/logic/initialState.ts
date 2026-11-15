@@ -74,6 +74,7 @@ export function createInitialGameState(params?: {
     releases: [],
     weeklyPlan: [],
     weeklyGoalsNote: '',
+    weeklyPActivityAvailability: {},
     concerts: [],
     tours: [],
     trends: generateWeeklyTrends(INITIAL_GAME_DATE.totalWeeks),
